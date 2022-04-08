@@ -1,9 +1,9 @@
 {
-    "rds_host": "",
+    "rds_host": "final.cwsn1nqds1jf.us-east-1.rds.amazonaws.com",
     "rds_port": "3306",
-    "rds_user": "",
-    "rds_password" : "",
-    "rds_db": "",
+    "rds_user": "TeamGeekSquad",
+    "rds_password" : "WithoutOne",
+    "rds_db": "db",
     "server_host": "127.0.0.1",
     "server_port":"8080"
 }
