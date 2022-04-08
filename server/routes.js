@@ -56,19 +56,45 @@ async function jersey(req, res) {
 //               GENERAL ROUTES
 // ********************************************
 
-
+/////////////////////////////////////////////////////////////////
 
 //QUERY A
 
 
 //QUERY B
+
+/* Recommend places to travel and want to eat in style and variety. 
+Return zip codes (with accompanying restaurant information) that contain at restaurants with at least 4.0+ stars. 
+This will render results using pagination functionality that will be created using LIMIT. 
+*/
+
 async function zips_for_good_meals_by_type(req, res) { 
     const mealtype = req.params.mealtype ? req.params.mealtype : 'chinese'
     // use this league encoding in your query to furnish the correct results
-    const pagesize = 10
+    const pagesize = req.query.pagesize ? req.query.pagesize : 10
     if (req.query.page && !isNaN(req.query.page)) {
         // This is the case where page is defined.
         //replaced '%chinese%' with the ability for the user to enter meal type
+        connection.query(
+            `select b.postal_code 
+            from Restaurant a, Location b, Meals c
+            where 1=1
+            and a.business_id = b.business_id
+            and a.business_id = c.business_id
+            and a.stars >= 4
+            and c.meal_type like '%${mealtype}%'
+            order by a.stars desc
+            limit ${(req.query.page-1)*pagesize}, ${pagesize}`, function (error, results, fields) {
+
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+    }else {
+        // we have implemented this for you to see how to return results by querying the database
         connection.query(
             `select b.postal_code 
             from Restaurant a, Location b, Meals c
@@ -103,6 +129,36 @@ async function zips_for_good_meals_by_type(req, res) {
 
 
 //QUERY F
+/* Select top 10 businesses for a given city above a given rating threshold, ordered by rating and review count. 
+Display business name, star rating, and any COVID-related messaging, if applicable.
+ */
+
+async function top_ten_restaurants_by_city_COVID(req, res) { 
+    const city = req.params.city ? req.params.city : 'Nashville'
+    // use this league encoding in your query to furnish the correct results
+    if (req.query.page && !isNaN(req.query.page)) {
+        // This is the case where page is defined.
+        //replaced '%chinese%' with the ability for the user to enter meal type
+        connection.query(
+            `select main.name, main.stars, main.review_count, c.COVID_Banner from Restaurant main
+            inner join Location l
+            on main.business_id = l.business_id
+            left join COVID_Response c
+            on main.business_id = c.COVID_Business_id
+            where main.stars >= 0
+            and l.city like '%${city}%'
+            order by main.stars desc, main.review_count desc
+            limit 10`, function (error, results, fields) {
+
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+    }
+}
 
 
 
@@ -113,7 +169,7 @@ async function zips_for_good_meals_by_type(req, res) {
 
 
 
-
+///////////////////////////////////////////////////////////
 
 // Route 3 (handler)
 async function all_matches(req, res) {
