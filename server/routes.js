@@ -62,6 +62,41 @@ async function jersey(req, res) {
 
 
 //QUERY B
+async function zips_for_good_meals_by_type(req, res) { 
+    const mealtype = req.params.mealtype ? req.params.mealtype : 'chinese'
+    // use this league encoding in your query to furnish the correct results
+    const pagesize = 10
+    if (req.query.page && !isNaN(req.query.page)) {
+        // This is the case where page is defined.
+        //replaced '%chinese%' with the ability for the user to enter meal type
+        connection.query(
+            `select b.postal_code 
+            from Restaurant a, Location b, Meals c
+            where 1=1
+            and a.business_id = b.business_id
+            and a.business_id = c.business_id
+            and a.stars >= 4
+            and c.meal_type like '%${mealtype}%'
+            order by a.stars desc
+            limit 10`, function (error, results, fields) {
+
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+    }
+}
+
+
+
+
+
+
+
+
 
 
 //QUERY C
