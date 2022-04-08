@@ -57,6 +57,35 @@ async function jersey(req, res) {
 // ********************************************
 
 
+
+//QUERY A
+
+
+//QUERY B
+
+
+//QUERY C
+
+
+//QUERY D
+
+
+//QUERY E
+
+
+//QUERY F
+
+
+
+
+
+
+
+
+
+
+
+
 // Route 3 (handler)
 async function all_matches(req, res) {
     // TODO: TASK 4: implement and test, potentially writing your own (ungraded) tests
