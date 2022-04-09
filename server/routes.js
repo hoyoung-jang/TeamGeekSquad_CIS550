@@ -120,9 +120,100 @@ async function zips_for_good_meals_by_type(req, res) {
 
 
 //QUERY C
+/*
+Query a single restaurant and add/remove attributes to customize what
+information is displayed on the screen. For example you want to see
+restaurants that have Bike Parking,  free Wifi. This is accomplished by
+joining the main Yelp data set against a list of sub-attributes. Recommend
+Top 20 lists (location, cuisine) order by rating
+*/
+async function filter_attributes(req, res) {
+    const state = req.query.Name ? req.query.State : 'CA'
+    const bike_parking = req.query.bike_parking ? req.query.bike_parking : 'True'
+    const wifi = req.query.wifi ? req.query.wifi : 'free'
+    const page = req.query.page
+    const pagesize = req.query.pagesize ? req.query.pagesize : 20
+
+        // This is the case where page is defined.
+        connection.query(`
+        select a.*
+        from Restaurant a, Attribute b
+        where 1=1
+        and a.business_id = b.business_id
+        and b.attributes like '%"BikeParking": ${bike_parking}%'
+        and b.attributes like '%"WiFi": "${wifi}"%'
+        order by stars desc
+        limit pagesize;`, function (error, results, fields) {
+
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+}
 
 
 //QUERY D
+/*
+Cluster neighborhoods by certain attributes and recommend a niche
+market . For example, find average rating of Italian Restaurant in CA group
+by near-by postal code
+ */
+async function filter_neighborhoods(req, res) {
+
+    const state = req.query.Name ? req.query.State : 'CA'
+    const postal_code = req.query.postal_code ? req.query.postal_code : '93'
+    const meal_type = req.query.meal_type ? req.query.meal_type : 'Italian'
+    const page = req.query.page
+    const pagesize = req.query.pagesize ? req.query.pagesize : 10
+
+    if (page && !isNaN(page)) {
+        // This is the case where page is defined.
+        connection.query(`select b.postal_code, avg(a.stars) as avg_rating
+        from Restaurant a, Location b, Meals c
+        where 1=1
+        and a.business_id = b.business_id
+        and a.business_id = c.business_id
+        and b.state = state
+        and b.postal_code like '${postal_code}%'
+        and c.meal_type like '%${mealtype}%'
+        group by b.postal_code
+        LIMIT ${pagesize*(page-1)}, ${pagesize}`, function (error, results, fields) {
+
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+
+    } else {
+
+        connection.query(`select b.postal_code, avg(a.stars) as avg_rating
+        from Restaurant a, Location b, Meals c
+        where 1=1
+        and a.business_id = b.business_id
+        and a.business_id = c.business_id
+        and b.state = state
+        and b.postal_code like postal_code
+        and c.meal_type like meal_type
+        group by b.postal_code`, function (error, results, fields) {
+
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+
+    }
+}
+
+
 
 
 //QUERY E
@@ -434,5 +525,8 @@ module.exports = {
     match,
     player,
     search_matches,
-    search_players
+    search_players,
+    zips_for_good_meals_by_type,
+    filter_attributes,
+    filter_neighborhoods
 }

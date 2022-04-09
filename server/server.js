@@ -35,7 +35,11 @@ app.get('/search/matches', routes.search_matches)
 // Route 8 - register as GET 
 app.get('/search/players', routes.search_players)
 
+// Route C - register as GET
+app.get('/filter_attributes', routes.filter_attributes())
 
+// Route D - register as GET
+app.get('/filter_neighborhoods', routes.filter_neighborhoods())
 
 
 
