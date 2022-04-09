@@ -11,29 +11,12 @@ const app = express();
 // whitelist localhost 3000
 app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 
-// Route 1 - register as GET 
-app.get('/hello', routes.hello)
 
-// Route 2 - register as GET 
-app.get('/jersey/:choice', routes.jersey)
+// Route A - register as GET
+app.get('/restaurant_by_postal_code', routes.restaurant_by_postal_code())
 
-// Route 3 - register as GET 
-app.get('/matches/:league', routes.all_matches)
-
-// Route 4 - register as GET 
-app.get('/players', routes.all_players)
-
-// Route 5 - register as GET 
-app.get('/match', routes.match)
-
-// Route 6 - register as GET 
-app.get('/player', routes.player)
-
-// Route 7 - register as GET 
-app.get('/search/matches', routes.search_matches)
-
-// Route 8 - register as GET 
-app.get('/search/players', routes.search_players)
+// Route B - register as GET
+app.get('/zips_for_good_meals_by_type', routes.zips_for_good_meals_by_type())
 
 // Route C - register as GET
 app.get('/filter_attributes', routes.filter_attributes())
@@ -41,7 +24,11 @@ app.get('/filter_attributes', routes.filter_attributes())
 // Route D - register as GET
 app.get('/filter_neighborhoods', routes.filter_neighborhoods())
 
+// Route E - register as GET
+app.get('/calc_revisit_rate_by_business_id', routes.calc_revisit_rate_by_business_id())
 
+// Route F - register as GET
+app.get('/top_ten_restaurants_by_city_COVID', routes.top_ten_restaurants_by_city_COVID())
 
 app.listen(config.server_port, () => {
     console.log(`Server running at http://${config.server_host}:${config.server_port}/`);
