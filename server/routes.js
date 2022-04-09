@@ -59,6 +59,27 @@ async function jersey(req, res) {
 /////////////////////////////////////////////////////////////////
 
 //QUERY A
+async function restaurant_by_postal_code (req, res) {
+    const postal_code = req.params.postal_code ? req.params.postal_code : 33707
+    // use this league encoding in your query to furnish the correct results
+    if (req.query.page && !isNaN(req.query.page)) {
+        // This is the case where page is defined.
+        //replaced ‘%chinese%’ with the ability for the user to enter meal type
+        connection.query(
+            `SELECT a.*
+                FROM Restaurant a, Location b
+                WHERE 1=1
+                    and a.business_id = b.business_id
+                    and b.postal_code = ${postal_code};`, function (error, results, fields) {
+                if (error) {
+                    console.log(error)
+                    res.json({ error: error })
+                } else if (results) {
+                    res.json({ results: results })
+                }
+            });
+    }
+}
 
 
 //QUERY B
@@ -215,9 +236,32 @@ async function filter_neighborhoods(req, res) {
 
 
 
-
 //QUERY E
-
+async function calc_revisit_rate_by_business_id (req, res) {
+    const business_id = req.params.business_id ? req.params.business_id : ‘bZiIIUcpgxh8mpKMDhdqbA’
+    // use this league encoding in your query to furnish the correct results
+    if (req.query.page && !isNaN(req.query.page)) {
+        // This is the case where page is defined.
+        //replaced ‘%chinese%’ with the ability for the user to enter meal type
+        connection.query(
+            `SELCT a.business_id, sum(a.visit_count) as total_count,
+                    sum(a.visit_count)-count(a.business_id) as revisit_count,
+                    (sum(a.visit_count)-count(a.business_id))/sum(a.visit_count) as revisiting_rate
+                FROM
+                    (SELECT business_id, user_id, count(user_id) as visit_count
+                    FROM Review
+                    WHERE business_id = ‘%${business_id}%’
+                    GROUP BY user_id
+                    ORDER BY visit_count) a;`, function (error, results, fields) {
+                if (error) {
+                    console.log(error)
+                    res.json({ error: error })
+                } else if (results) {
+                    res.json({ results: results })
+                }
+            });
+    }
+}
 
 //QUERY F
 /* Select top 10 businesses for a given city above a given rating threshold, ordered by rating and review count. 
@@ -526,7 +570,9 @@ module.exports = {
     player,
     search_matches,
     search_players,
+    restaurant_by_postal_code,
     zips_for_good_meals_by_type,
     filter_attributes,
-    filter_neighborhoods
+    filter_neighborhoods,
+    calc_revisit_rate_by_business_id
 }
