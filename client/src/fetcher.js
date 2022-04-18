@@ -60,5 +60,11 @@ export {
     getMatch,
     getPlayer,
     getMatchSearch,
-    getPlayerSearch
+    getPlayerSearch,
+    restaurant_by_postal_code,
+    zips_for_good_meals_by_type,
+    filter_attributes,
+    filter_neighborhoods,
+    calc_revisit_rate_by_business_id,
+    top_ten_restaurants_by_city_COVID
 }
