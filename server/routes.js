@@ -21,7 +21,7 @@ connection.connect();
 /////////////////////////////////////////////////////////////////
 
 //QUERY A
-async function restaurant_by_postal_code(req, res) {
+async function restaurant_by_postal_code (req, res) {
     const postal_code = req.params.postal_code ? req.params.postal_code : 33707
     // use this league encoding in your query to furnish the correct results
     if (req.query.page && !isNaN(req.query.page)) {
@@ -46,12 +46,12 @@ async function restaurant_by_postal_code(req, res) {
 
 //QUERY B
 
-/* Recommend places to travel and want to eat in style and variety. 
-Return zip codes (with accompanying restaurant information) that contain at restaurants with at least 4.0+ stars. 
-This will render results using pagination functionality that will be created using LIMIT. 
+/* Recommend places to travel and want to eat in style and variety.
+Return zip codes (with accompanying restaurant information) that contain at restaurants with at least 4.0+ stars.
+This will render results using pagination functionality that will be created using LIMIT.
 */
 
-async function zips_for_good_meals_by_type(req, res) { 
+async function zips_for_good_meals_by_type(req, res) {
     const mealtype = req.params.mealtype ? req.params.mealtype : 'chinese'
     // use this league encoding in your query to furnish the correct results
     const pagesize = req.query.pagesize ? req.query.pagesize : 10
@@ -69,13 +69,13 @@ async function zips_for_good_meals_by_type(req, res) {
             order by a.stars desc
             limit ${(req.query.page-1)*pagesize}, ${pagesize}`, function (error, results, fields) {
 
-            if (error) {
-                console.log(error)
-                res.json({ error: error })
-            } else if (results) {
-                res.json({ results: results })
-            }
-        });
+                if (error) {
+                    console.log(error)
+                    res.json({ error: error })
+                } else if (results) {
+                    res.json({ results: results })
+                }
+            });
     }else {
         // we have implemented this for you to see how to return results by querying the database
         connection.query(
@@ -89,13 +89,13 @@ async function zips_for_good_meals_by_type(req, res) {
             order by a.stars desc
             limit 10`, function (error, results, fields) {
 
-            if (error) {
-                console.log(error)
-                res.json({ error: error })
-            } else if (results) {
-                res.json({ results: results })
-            }
-        });
+                if (error) {
+                    console.log(error)
+                    res.json({ error: error })
+                } else if (results) {
+                    res.json({ results: results })
+                }
+            });
     }
 }
 
@@ -117,8 +117,8 @@ async function filter_attributes(req, res) {
     const page = req.query.page
     const pagesize = req.query.pagesize ? req.query.pagesize : 20
 
-        // This is the case where page is defined.
-        connection.query(`
+    // This is the case where page is defined.
+    connection.query(`
         select a.*
         from Restaurant a, Attribute b
         where 1=1
@@ -128,13 +128,13 @@ async function filter_attributes(req, res) {
         order by stars desc
         limit pagesize;`, function (error, results, fields) {
 
-            if (error) {
-                console.log(error)
-                res.json({ error: error })
-            } else if (results) {
-                res.json({ results: results })
-            }
-        });
+        if (error) {
+            console.log(error)
+            res.json({ error: error })
+        } else if (results) {
+            res.json({ results: results })
+        }
+    });
 }
 
 
@@ -212,7 +212,7 @@ async function calc_revisit_rate_by_business_id (req, res) {
                 FROM
                     (SELECT business_id, user_id, count(user_id) as visit_count
                     FROM Review
-                    WHERE business_id = ‘%${business_id}%’
+                    WHERE business_id = '${business_id}%'
                     GROUP BY user_id
                     ORDER BY visit_count) a;`, function (error, results, fields) {
                 if (error) {
@@ -226,11 +226,11 @@ async function calc_revisit_rate_by_business_id (req, res) {
 }
 
 //QUERY F
-/* Select top 10 businesses for a given city above a given rating threshold, ordered by rating and review count. 
+/* Select top 10 businesses for a given city above a given rating threshold, ordered by rating and review count.
 Display business name, star rating, and any COVID-related messaging, if applicable.
  */
 
-async function top_ten_restaurants_by_city_COVID(req, res) { 
+async function top_ten_restaurants_by_city_COVID(req, res) {
     const city = req.params.city ? req.params.city : 'Nashville'
     // use this league encoding in your query to furnish the correct results
     if (req.query.page && !isNaN(req.query.page)) {
@@ -247,22 +247,22 @@ async function top_ten_restaurants_by_city_COVID(req, res) {
             order by main.stars desc, main.review_count desc
             limit 10`, function (error, results, fields) {
 
-            if (error) {
-                console.log(error)
-                res.json({ error: error })
-            } else if (results) {
-                res.json({ results: results })
-            }
-        });
+                if (error) {
+                    console.log(error)
+                    res.json({ error: error })
+                } else if (results) {
+                    res.json({ results: results })
+                }
+            });
     }
 }
 
 
 module.exports = {
-    restaurant_by_postal_code: restaurant_by_postal_code,
-    zips_for_good_meals_by_type: zips_for_good_meals_by_type,
-    filter_attributes: filter_attributes,
-    filter_neighborhoods: filter_neighborhoods,
-    calc_revisit_rate_by_business_id: calc_revisit_rate_by_business_id,
-    top_ten_restaurants_by_city_COVID: top_ten_restaurants_by_city_COVID
+    restaurant_by_postal_code,
+    zips_for_good_meals_by_type,
+    filter_attributes,
+    filter_neighborhoods,
+    calc_revisit_rate_by_business_id,
+    top_ten_restaurants_by_city_COVID
 }
