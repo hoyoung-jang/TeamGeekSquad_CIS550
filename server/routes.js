@@ -259,10 +259,10 @@ async function top_ten_restaurants_by_city_COVID(req, res) {
 
 
 module.exports = {
-    restaurant_by_postal_code,
-    zips_for_good_meals_by_type,
-    filter_attributes,
-    filter_neighborhoods,
-    calc_revisit_rate_by_business_id,
-    top_ten_restaurants_by_city_COVID
+    
+    zips_for_good_meals_by_type: zips_for_good_meals_by_type,
+    filter_attributes: filter_attributes,
+    filter_neighborhoods: filter_neighborhoods,
+    calc_revisit_rate_by_business_id: calc_revisit_rate_by_business_id,
+    top_ten_restaurants_by_city_COVID: top_ten_restaurants_by_city_COVID
 }
