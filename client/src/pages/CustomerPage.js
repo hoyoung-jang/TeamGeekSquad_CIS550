@@ -11,7 +11,12 @@ import {
     Select
 } from 'antd'
 
-import { getMatchSearch, getMatch, getAllMatches } from '../fetcher'
+import { getRestaurantByPostalCode,
+    getZipsForGoodMealsByType,
+    getFilterAttributes,
+    getFilterNeighborhoods,
+    getCalcRevisitRateByBusinessId,
+    getTopTenRestaurantsByCityCOVID } from '../fetcher'
 
 import MenuBar from '../components/MenuBar';
 
@@ -19,15 +24,16 @@ const { Column, ColumnGroup } = Table;
 const { Option } = Select;
 
 
-class MatchesPage extends React.Component {
+class CustomerPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            awayQuery: "",
-            homeQuery: "",
-            matchesResults: [],
-            selectedMatchId: window.location.search ? window.location.search.substring(1).split('=')[1] : 0,
-            selectedMatchDetails: null
+            // awayQuery: "",
+            // homeQuery: "",
+            // matchesResults: [],
+            // selectedMatchId: window.location.search ? window.location.search.substring(1).split('=')[1] : 0,
+            // selectedMatchDetails: null
+
         }
 
         this.handleAwayQueryChange = this.handleAwayQueryChange.bind(this)
@@ -60,10 +66,10 @@ class MatchesPage extends React.Component {
 
     leagueOnChange(value) {
         getAllMatches(null, null, value).then(res => {
-          this.setState({ matchesResults: res.results })
+            this.setState({ matchesResults: res.results })
         })
-      }
-    
+    }
+
 
     componentDidMount() {
         getMatchSearch(this.state.homeQuery, this.state.awayQuery, null, null).then(res => {
@@ -111,34 +117,34 @@ class MatchesPage extends React.Component {
                         <Option value="I1">Serie A</Option>
                         <Option value="E0">Premier League</Option>
                     </Select>
-                    
+
                     <Table onRow={(record, rowIndex) => {
-                return {
-                onClick: event => {this.goToMatch(record.MatchId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter  
-                };
-            }} dataSource={this.state.matchesResults} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}>
+                        return {
+                            onClick: event => {this.goToMatch(record.MatchId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
+                        };
+                    }} dataSource={this.state.matchesResults} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}>
                         <ColumnGroup title="Teams">
-                        
-                        <Column title="Home" dataIndex="Home" key="Home" sorter= {(a, b) => a.Home.localeCompare(b.Home)}/>
-                        <Column title="Away" dataIndex="Away" key="Away" sorter= {(a, b) => a.Away.localeCompare(b.Away)}/>
+
+                            <Column title="Home" dataIndex="Home" key="Home" sorter= {(a, b) => a.Home.localeCompare(b.Home)}/>
+                            <Column title="Away" dataIndex="Away" key="Away" sorter= {(a, b) => a.Away.localeCompare(b.Away)}/>
                         </ColumnGroup>
                         <ColumnGroup title="Goals">
-                        
-                        <Column title="HomeGoals" dataIndex="HomeGoals" key="HomeGoals" sorter= {(a, b) => a.HomeGoals - b.HomeGoals}/>
-                        <Column title="AwayGoals" dataIndex="AwayGoals" key="AwayGoals" sorter= {(a, b) => a.AwayGoals - b.AwayGoals}/>
+
+                            <Column title="HomeGoals" dataIndex="HomeGoals" key="HomeGoals" sorter= {(a, b) => a.HomeGoals - b.HomeGoals}/>
+                            <Column title="AwayGoals" dataIndex="AwayGoals" key="AwayGoals" sorter= {(a, b) => a.AwayGoals - b.AwayGoals}/>
                         </ColumnGroup>
-                        
+
                         <Column title="Date" dataIndex="Date" key="Date"/>
                         <Column title="Time" dataIndex="Time" key="Time"/>
                     </Table>
 
-                    </div>
+                </div>
 
 
 
 
 
-                
+
                 <Divider />
                 {this.state.selectedMatchDetails ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <Card>
@@ -191,7 +197,7 @@ class MatchesPage extends React.Component {
 
                             <Row gutter='30' align='middle' justify='center'>
                                 <Col span={9} style={{ textAlign: 'left' }}>
-                                <Progress value={this.state.selectedMatchDetails.ShotsOnTargetHome * 100 / this.state.selectedMatchDetails.ShotsHome}>{this.state.selectedMatchDetails.ShotsOnTargetHome} / {this.state.selectedMatchDetails.ShotsHome}</Progress>
+                                    <Progress value={this.state.selectedMatchDetails.ShotsOnTargetHome * 100 / this.state.selectedMatchDetails.ShotsHome}>{this.state.selectedMatchDetails.ShotsOnTargetHome} / {this.state.selectedMatchDetails.ShotsHome}</Progress>
                                 </Col >
                                 <Col span={6} style={{ textAlign: 'center' }}>
                                     Shot Accuracy
@@ -249,11 +255,11 @@ class MatchesPage extends React.Component {
                                 <Col span={9} style={{ textAlign: 'right' }}>
                                     <h5>{this.state.selectedMatchDetails.YCAway}</h5>
                                 </Col>
-                            </Row>                            
+                            </Row>
 
                         </CardBody>
                     </Card>
-                    
+
                 </div> : null}
                 <Divider />
 
@@ -262,5 +268,8 @@ class MatchesPage extends React.Component {
     }
 }
 
-export default MatchesPage
+export default CustomerPage
+
+
+
 

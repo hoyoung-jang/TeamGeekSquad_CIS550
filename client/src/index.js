@@ -7,35 +7,34 @@ import {
 } from 'react-router-dom';
 
 import HomePage from './pages/HomePage';
-import PlayersPage from './pages/PlayersPage';
+import CustomerPage from './pages/CustomerPage';
 import 'antd/dist/antd.css';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "shards-ui/dist/css/shards.min.css"
-import MatchesPage from './pages/MatchesPage';
+import OwnerPage from './pages/OwnerPage';
 
 ReactDOM.render(
-  <div>
-    <Router>
-      <Switch>
-        <Route exact
-							path="/"
-							render={() => (
-								<HomePage />
-							)}/>
-        <Route exact
-							path="/players"
-							render={() => (
-								<PlayersPage />
-							)}/>
-        <Route exact
-							path="/matches"
-							render={() => (
-								<MatchesPage />
-							)}/>
-      </Switch>
-    </Router>
-  </div>,
-  document.getElementById('root')
+	<div>
+		<Router>
+			<Switch>
+				<Route exact
+					   path="/"
+					   render={() => (
+						   <HomePage />
+					   )}/>
+				<Route exact
+					   path="/customer"
+					   render={() => (
+						   <CustomerPage />
+					   )}/>
+				<Route exact
+					   path="/owner"
+					   render={() => (
+						   <OwnerPage />
+					   )}/>
+			</Switch>
+		</Router>
+	</div>,
+	document.getElementById('root')
 );
-
