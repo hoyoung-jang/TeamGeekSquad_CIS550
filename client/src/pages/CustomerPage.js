@@ -4,7 +4,7 @@ import { Form, FormInput, FormGroup, Button, Card, CardBody, CardTitle, Progress
 
 import {
     Table,
-    Pagination,
+    // Pagination,
     Row,
     Col,
     Divider,
@@ -12,11 +12,12 @@ import {
 } from 'antd'
 
 import { getRestaurantByPostalCode,
-    getZipsForGoodMealsByType,
+    // getZipsForGoodMealsByType,
     getFilterAttributes,
-    getFilterNeighborhoods,
-    getCalcRevisitRateByBusinessId,
-    getTopTenRestaurantsByCityCOVID } from '../fetcher'
+    getFilterNeighborhoods
+    // getCalcRevisitRateByBusinessId,
+    // getTopTenRestaurantsByCityCOVID
+} from '../fetcher'
 
 import MenuBar from '../components/MenuBar';
 
@@ -28,76 +29,61 @@ class CustomerPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            // awayQuery: "",
-            // homeQuery: "",
-            // matchesResults: [],
-            // selectedMatchId: window.location.search ? window.location.search.substring(1).split('=')[1] : 0,
-            // selectedMatchDetails: null
-            state: "CA",
-            // bike_parking: false,
-            // wifi: true
+            states: "CA",
+            city: "LA",
+            bikeParking: false,
+            wifi: true,
             postalCode: 33707,
-            mealType: 'Italian'
+            mealType: 'Italian',
+            restaurantResults: []
         }
 
-        // this.handleAwayQueryChange = this.handleAwayQueryChange.bind(this)
-        // this.handleHomeQueryChange = this.handleHomeQueryChange.bind(this)
-        // this.updateSearchResults = this.updateSearchResults.bind(this)
-        // this.goToMatch = this.goToMatch.bind(this)
-        // this.leagueOnChange = this.leagueOnChange.bind(this)
-
-        this.stateChange = this.stateChange.bind(this)
-        // this.bike_parkingChange = this.bike_parkingChange.bind(this)
+        this.statesChange = this.statesChange.bind(this)
+        this.cityChange = this.cityChange.bind(this)
+        // this.bikeParkingChange = this.bikeParkingChange.bind(this)
         // this.wifiChange = this.wifiChange.bind(this)
-        this.postalCodeChange = this.postalCodeChange.bind(this)
-        this.mealTypeChange = this.mealTypeChange.bind(this)
+        // this.postalCodeChange = this.postalCodeChange.bind(this)
+        // this.mealTypeChange = this.mealTypeChange.bind(this)
     }
 
-    stateChange(event) {
-        this.setState({state: event.state})
+    statesChange(event) {
+        this.setState({states: event.target.state})
     }
+
+    cityChange(event) {
+        this.setState({city: event.target.city})
+    }
+
+    updateFilterNeighborhoods(){
+        getFilterNeighborhoods(this.state.states, this.state.postalCode, this.state.mealType, null, null).then(res => {
+            this.setState({ restaurantResults: res.results })
+        })
+    }
+
+
 
     updateFilterAttirubtes(){
-        filter_attributes(this.state.homeQuery, this.state.awayQuery, null, null).then(res => {
-        this.setState({ matchesResults: res.results })
+        getFilterAttributes().then(res => {
+            this.setState({ restaurantResults: res.results })
         })
     }
 
-    handleAwayQueryChange(event) {
-        this.setState({ awayQuery: event.target.value })
-    }
 
-    handleHomeQueryChange(event) {
-        // TASK 10: update state variables appropriately. See handleAwayQueryChange(event) for reference
-        this.setState({ homeQuery: event.target.value })
-    }
-    goToMatch(matchId) {
-        window.location = `/matches?id=${matchId}`
+    // goToMatch(matchId) {
+    //     window.location = `/matches?id=${matchId}`
+    //
+    // }
+    //
 
-    }
-
-    updateSearchResults() {
-        //TASK 11: call getMatchSearch and update matchesResults in state. See componentDidMount() for a hint
-        getMatchSearch(this.state.homeQuery, this.state.awayQuery, null, null).then(res => {
-            this.setState({ matchesResults: res.results })
-        })
-
-    }
-
-    leagueOnChange(value) {
-        getAllMatches(null, null, value).then(res => {
-            this.setState({ matchesResults: res.results })
-        })
-    }
 
 
     componentDidMount() {
-        getMatchSearch(this.state.homeQuery, this.state.awayQuery, null, null).then(res => {
+        getFilterAttributes().then(res => {
             this.setState({ matchesResults: res.results })
         })
 
-        getMatch(this.state.selectedMatchId).then(res => {
-            this.setState({ selectedMatchDetails: res.results[0] })
+        getRestaurantByPostalCode(this.state.postalCode).then(res => {
+            this.setState({ restaurantResults: res.results[0] })
         })
 
     }
@@ -109,15 +95,15 @@ class CustomerPage extends React.Component {
                 <Form style={{ width: '80vw', margin: '0 auto', marginTop: '5vh' }}>
                     <Row>
                         <Col flex={2}><FormGroup style={{ width: '20vw', margin: '0 auto' }}>
-                            <label>Home Team</label>
-                            <FormInput placeholder="Home Team" value={this.state.homeQuery} onChange={this.handleHomeQueryChange} />
+                            <label>State</label>
+                            <FormInput placeholder="States" value={this.state.states} onChange={this.statesChange} />
                         </FormGroup></Col>
                         <Col flex={2}><FormGroup style={{ width: '20vw', margin: '0 auto' }}>
-                            <label>Away Team</label>
-                            <FormInput placeholder="Away Team" value={this.state.awayQuery} onChange={this.handleAwayQueryChange} />
+                            <label>City</label>
+                            <FormInput placeholder="City" value={this.state.city} onChange={this.cityChange} />
                         </FormGroup></Col>
                         <Col flex={2}><FormGroup style={{ width: '10vw' }}>
-                            <Button style={{ marginTop: '4vh' }} onClick={this.updateSearchResults}>Search</Button>
+                            <Button style={{ marginTop: '4vh' }} onClick={this.updateFilterNeighborhoods}>Search</Button>
                         </FormGroup></Col>
 
                     </Row>
@@ -129,34 +115,31 @@ class CustomerPage extends React.Component {
 
                 <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <h3>Matches</h3>
-                    <Select defaultValue="D1" style={{ width: 120 }} onChange={this.leagueOnChange}>
-                        <Option value="D1">Bundesliga</Option>
+                    <Select defaultValue="CA" style={{ width: 120 }} onChange={this.statesChange}>
+                        <Option value="CA">California</Option>
                         {/* TASK 3: Take a look at Dataset Information.md from MS1 and add other options to the selector here  */}
-                        <Option value="SP1">La Liga</Option>
-                        <Option value="F1">Ligue 1</Option>
-                        <Option value="I1">Serie A</Option>
-                        <Option value="E0">Premier League</Option>
+                        <Option value="PA">Pennsylvania</Option>
                     </Select>
 
-                    <Table onRow={(record, rowIndex) => {
-                        return {
-                            onClick: event => {this.goToMatch(record.MatchId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
-                        };
-                    }} dataSource={this.state.matchesResults} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}>
-                        <ColumnGroup title="Teams">
+                    {/*<Table onRow={(record, rowIndex) => {*/}
+                    {/*    return {*/}
+                    {/*        onClick: event => {this.goToMatch(record.MatchId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter*/}
+                    {/*    };*/}
+                    {/*}} dataSource={this.state.matchesResults} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}>*/}
+                    {/*    <ColumnGroup title="Teams">*/}
 
-                            <Column title="Home" dataIndex="Home" key="Home" sorter= {(a, b) => a.Home.localeCompare(b.Home)}/>
-                            <Column title="Away" dataIndex="Away" key="Away" sorter= {(a, b) => a.Away.localeCompare(b.Away)}/>
-                        </ColumnGroup>
-                        <ColumnGroup title="Goals">
+                    {/*        <Column title="Home" dataIndex="Home" key="Home" sorter= {(a, b) => a.Home.localeCompare(b.Home)}/>*/}
+                    {/*        <Column title="Away" dataIndex="Away" key="Away" sorter= {(a, b) => a.Away.localeCompare(b.Away)}/>*/}
+                    {/*    </ColumnGroup>*/}
+                    {/*    <ColumnGroup title="Goals">*/}
 
-                            <Column title="HomeGoals" dataIndex="HomeGoals" key="HomeGoals" sorter= {(a, b) => a.HomeGoals - b.HomeGoals}/>
-                            <Column title="AwayGoals" dataIndex="AwayGoals" key="AwayGoals" sorter= {(a, b) => a.AwayGoals - b.AwayGoals}/>
-                        </ColumnGroup>
+                    {/*        <Column title="HomeGoals" dataIndex="HomeGoals" key="HomeGoals" sorter= {(a, b) => a.HomeGoals - b.HomeGoals}/>*/}
+                    {/*        <Column title="AwayGoals" dataIndex="AwayGoals" key="AwayGoals" sorter= {(a, b) => a.AwayGoals - b.AwayGoals}/>*/}
+                    {/*    </ColumnGroup>*/}
 
-                        <Column title="Date" dataIndex="Date" key="Date"/>
-                        <Column title="Time" dataIndex="Time" key="Time"/>
-                    </Table>
+                    {/*    <Column title="Date" dataIndex="Date" key="Date"/>*/}
+                    {/*    <Column title="Time" dataIndex="Time" key="Time"/>*/}
+                    {/*</Table>*/}
 
                 </div>
 
@@ -166,28 +149,28 @@ class CustomerPage extends React.Component {
 
 
                 <Divider />
-                {this.state.selectedMatchDetails ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
+                {this.state.restaurantResults ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <Card>
                         <CardBody>
 
 
                             <Row gutter='30' align='middle' justify='center'>
                                 <Col flex={2} style={{ textAlign: 'left' }}>
-                                    <CardTitle>{this.state.selectedMatchDetails.Home}</CardTitle>
+                                    <CardTitle>{this.state.restaurantResults}</CardTitle>
 
                                 </Col>
                                 <Col flex={2} style={{ textAlign: 'center' }}>
-                                    {this.state.selectedMatchDetails.Date} at {this.state.selectedMatchDetails.Time}
+                                    {this.state.restaurantResults} at {this.state.restaurantResults}
                                 </Col>
                                 {/* TASK 13: Add a column with flex = 2, and text alignment = right to display the name of the away team - similar to column 1 in this row */}
                                 <Col flex={2} style={{ textAlign: 'right' }}>
-                                    <CardTitle>{this.state.selectedMatchDetails.Away}</CardTitle>
+                                    <CardTitle>{this.state.restaurantResults}</CardTitle>
                                 </Col>
 
                             </Row>
                             <Row gutter='30' align='middle' justify='center'>
                                 <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h3>{this.state.selectedMatchDetails.HomeGoals}</h3>
+                                    <h3>{this.state.selectedMatchDetails}</h3>
                                 </Col >
                                 <Col span={6} style={{ textAlign: 'center' }}>
                                     Goals
@@ -195,21 +178,21 @@ class CustomerPage extends React.Component {
                                 {/* TASK 14: Add a column with span = 9, and text alignment = right to display the # of goals the away team scored - similar 1 in this row */}
 
                                 <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h3>{this.state.selectedMatchDetails.AwayGoals}</h3>
+                                    <h3>{this.state.restaurantResults}</h3>
                                 </Col>
                             </Row>
                             {/* TASK 15: create a row for goals at half time similar to the row for 'Goals' above, but use h5 in place of h3!  */}
 
                             <Row gutter='30' align='middle' justify='center'>
                                 <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h5>{this.state.selectedMatchDetails.HTHomeGoals}</h5>
+                                    <h5>{this.state.restaurantResults}</h5>
                                 </Col >
                                 <Col span={6} style={{ textAlign: 'center' }}>
                                     Half-time Goals
                                 </Col >
 
                                 <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h5>{this.state.selectedMatchDetails.HTAwayGoals}</h5>
+                                    <h5>{this.state.restaurantResults}</h5>
                                 </Col>
                             </Row>
 
@@ -217,37 +200,37 @@ class CustomerPage extends React.Component {
 
                             <Row gutter='30' align='middle' justify='center'>
                                 <Col span={9} style={{ textAlign: 'left' }}>
-                                    <Progress value={this.state.selectedMatchDetails.ShotsOnTargetHome * 100 / this.state.selectedMatchDetails.ShotsHome}>{this.state.selectedMatchDetails.ShotsOnTargetHome} / {this.state.selectedMatchDetails.ShotsHome}</Progress>
+                                    <Progress value={this.state.restaurantResults.avg_rating}>{this.state.restaurantResults.avg_rating}</Progress>
                                 </Col >
                                 <Col span={6} style={{ textAlign: 'center' }}>
                                     Shot Accuracy
                                 </Col >
                                 <Col span={9} style={{ textAlign: 'right' }}>
                                     {/* TASK 18: add a progress bar to display the shot accuracy for the away team -  look at the progress bar in column 1 of this row for reference*/}
-                                    <Progress value={this.state.selectedMatchDetails.ShotsOnTargetAway * 100 / this.state.selectedMatchDetails.ShotsAway}>{this.state.selectedMatchDetails.ShotsOnTargetAway} / {this.state.selectedMatchDetails.ShotsAway}</Progress>
+                                    <Progress value={this.state.restaurantResults.avg_rating}>{this.state.restaurantResults.avg_rating}</Progress>
                                 </Col>
                             </Row>
                             <Row gutter='30' align='middle' justify='center'>
                                 <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h5>{this.state.selectedMatchDetails.CornersHome}</h5>
+                                    <h5>{this.state.restaurantResults.avg_rating}</h5>
                                 </Col >
                                 <Col span={6} style={{ textAlign: 'center' }}>
                                     Corners
                                 </Col >
                                 <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h5>{this.state.selectedMatchDetails.CornersAway}</h5>
+                                    <h5>{this.state.restaurantResults.avg_rating}</h5>
                                 </Col>
                             </Row>
                             {/* TASK 16: add a row for fouls cards - check out the above lines for how we did it for corners */}
                             <Row gutter='30' align='middle' justify='center'>
                                 <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h5>{this.state.selectedMatchDetails.FoulsHome}</h5>
+                                    <h5>{this.state.restaurantResults.avg_rating}</h5>
                                 </Col >
                                 <Col span={6} style={{ textAlign: 'center' }}>
                                     Fouls
                                 </Col >
                                 <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h5>{this.state.selectedMatchDetails.FoulsAway}</h5>
+                                    <h5>{this.state.restaurantResults.avg_rating}</h5>
                                 </Col>
                             </Row>
 
@@ -255,25 +238,25 @@ class CustomerPage extends React.Component {
 
                             <Row gutter='30' align='middle' justify='center'>
                                 <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h5>{this.state.selectedMatchDetails.RCHome}</h5>
+                                    <h5>{this.state.restaurantResults.avg_rating}</h5>
                                 </Col >
                                 <Col span={6} style={{ textAlign: 'center' }}>
                                     Red Cards
                                 </Col >
                                 <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h5>{this.state.selectedMatchDetails.RCAway}</h5>
+                                    <h5>{this.state.restaurantResults.avg_rating}</h5>
                                 </Col>
                             </Row>
                             {/* TASK 17: add a row for yellow cards - check out the above lines for how we did it for red cards */}
                             <Row gutter='30' align='middle' justify='center'>
                                 <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h5>{this.state.selectedMatchDetails.YCHome}</h5>
+                                    <h5>{this.state.restaurantResults.avg_rating}</h5>
                                 </Col >
                                 <Col span={6} style={{ textAlign: 'center' }}>
                                     Yellow Cards
                                 </Col >
                                 <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h5>{this.state.selectedMatchDetails.YCAway}</h5>
+                                    <h5>{this.state.restaurantResults.avg_rating}</h5>
                                 </Col>
                             </Row>
 
