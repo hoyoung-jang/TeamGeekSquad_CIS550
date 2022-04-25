@@ -26,7 +26,7 @@ async function restaurant_by_postal_code (req, res) {
     // use this league encoding in your query to furnish the correct results
     if (req.query.page && !isNaN(req.query.page)) {
         // This is the case where page is defined.
-        //replaced ‘%chinese%’ with the ability for the user to enter meal type
+        //replaced ‘%chinese%’ with the rability for the user to enter meal type
         connection.query(
             `SELECT a.*
                 FROM Restaurant a, Location b
@@ -117,8 +117,9 @@ async function filter_attributes(req, res) {
     const page = req.query.page
     const pagesize = req.query.pagesize ? req.query.pagesize : 20
 
-    // This is the case where page is defined.
-    connection.query(`
+    if (page && !isNaN(page)) {
+        // This is the case where page is defined.
+        connection.query(`
         select a.*
         from Restaurant a, Attribute b
         where 1=1
@@ -126,15 +127,34 @@ async function filter_attributes(req, res) {
         and b.attributes like '%"BikeParking": ${bike_parking}%'
         and b.attributes like '%"WiFi": "${wifi}"%'
         order by stars desc
-        limit pagesize;`, function (error, results, fields) {
+        LIMIT ${pagesize*(page-1)}, ${pagesize};`, function (error, results, fields) {
 
-        if (error) {
-            console.log(error)
-            res.json({ error: error })
-        } else if (results) {
-            res.json({ results: results })
-        }
-    });
+            if (error) {
+                console.log(error)
+                res.json({error: error})
+            } else if (results) {
+                res.json({results: results})
+            }
+        });
+    } else {
+        // This is the case where page is not defined.
+        connection.query(`
+        select a.*
+        from Restaurant a, Attribute b
+        where 1=1
+        and a.business_id = b.business_id
+        and b.attributes like '%"BikeParking": ${bike_parking}%'
+        and b.attributes like '%"WiFi": "${wifi}"%'
+        order by stars desc`, function (error, results, fields) {
+
+            if (error) {
+                console.log(error)
+                res.json({error: error})
+            } else if (results) {
+                res.json({results: results})
+            }
+        });
+    }
 }
 
 

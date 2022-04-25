@@ -33,14 +33,34 @@ class CustomerPage extends React.Component {
             // matchesResults: [],
             // selectedMatchId: window.location.search ? window.location.search.substring(1).split('=')[1] : 0,
             // selectedMatchDetails: null
-
+            state: "CA",
+            // bike_parking: false,
+            // wifi: true
+            postalCode: 33707,
+            mealType: 'Italian'
         }
 
-        this.handleAwayQueryChange = this.handleAwayQueryChange.bind(this)
-        this.handleHomeQueryChange = this.handleHomeQueryChange.bind(this)
-        this.updateSearchResults = this.updateSearchResults.bind(this)
-        this.goToMatch = this.goToMatch.bind(this)
-        this.leagueOnChange = this.leagueOnChange.bind(this)
+        // this.handleAwayQueryChange = this.handleAwayQueryChange.bind(this)
+        // this.handleHomeQueryChange = this.handleHomeQueryChange.bind(this)
+        // this.updateSearchResults = this.updateSearchResults.bind(this)
+        // this.goToMatch = this.goToMatch.bind(this)
+        // this.leagueOnChange = this.leagueOnChange.bind(this)
+
+        this.stateChange = this.stateChange.bind(this)
+        // this.bike_parkingChange = this.bike_parkingChange.bind(this)
+        // this.wifiChange = this.wifiChange.bind(this)
+        this.postalCodeChange = this.postalCodeChange.bind(this)
+        this.mealTypeChange = this.mealTypeChange.bind(this)
+    }
+
+    stateChange(event) {
+        this.setState({state: event.state})
+    }
+
+    updateFilterAttirubtes(){
+        filter_attributes(this.state.homeQuery, this.state.awayQuery, null, null).then(res => {
+        this.setState({ matchesResults: res.results })
+        })
     }
 
     handleAwayQueryChange(event) {

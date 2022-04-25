@@ -8,11 +8,12 @@ import {
 
 import HomePage from './pages/HomePage';
 import CustomerPage from './pages/CustomerPage';
+import OwnerPage from './pages/OwnerPage';
 import 'antd/dist/antd.css';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "shards-ui/dist/css/shards.min.css"
-import OwnerPage from './pages/OwnerPage';
+
 
 ReactDOM.render(
 	<div>
