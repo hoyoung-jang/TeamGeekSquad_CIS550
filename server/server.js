@@ -33,7 +33,7 @@ app.get('/calc_revisit_rate_by_business_id', routes.calc_revisit_rate_by_busines
 app.get('/top_ten_restaurants_by_city_COVID', routes.top_ten_restaurants_by_city_COVID)
 
 // Route G - register as GET
-app.get('/getReview', routes.getReview)
+app.get('/getReviews', routes.getReviews)
 
 
 app.listen(config.server_port, () => {

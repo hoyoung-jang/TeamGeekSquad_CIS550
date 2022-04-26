@@ -300,7 +300,7 @@ Top 20 lists (location, cuisine) order by rating
 */
 async function getReviews(req, res) {
     const pagesize = req.query.pagesize ? req.query.pagesize : 10
-    const businessId = req.query.businessId
+    const businessId = req.query.businessId ? req.query.businessId : 'bZiIIUcpgxh8mpKMDhdqbA'
     const basicQuery = `SELECT business_id, text AS review FROM Review WHERE business_id = '${businessId}'`
     const pageQuery = req.query.page? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
     const query = `${basicQuery} ${pageQuery};`
