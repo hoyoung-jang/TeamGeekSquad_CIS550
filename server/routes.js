@@ -20,6 +20,35 @@ connection.connect();
 
 /////////////////////////////////////////////////////////////////
 
+async function getAllRestaurants (req, res) {
+    // use this league encoding in your query to furnish the correct results
+    const pagesize = req.query.pagesize? req.query.pagesize : 10;
+    if (req.query.page && !isNaN(req.query.page)) {
+        // This is the case where page is defined.
+        //replaced ‘%chinese%’ with the rability for the user to enter meal type
+        connection.query(
+            `SELECT business_id,name,stars,review_count,hours FROM Restaurant a
+            LIMIT ${pagesize}*(${req.query.page}-1), ${pagesize}`, function (error, results, fields) {
+                if (error) {
+                    console.log(error)
+                    res.json({ error: error })
+                } else if (results) {
+                    res.json({ results: results })
+                }
+            });
+    } else {
+        connection.query(`SELECT business_id,name,stars,review_count,hours FROM Restaurant`
+        , function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+    }
+}
+
 //QUERY A
 async function restaurant_by_postal_code (req, res) {
     const postal_code = req.params.postal_code ? req.params.postal_code : 33707
@@ -294,6 +323,7 @@ async function getReview(req, res) {
 
 
 module.exports = {
+    getAllRestaurants,
     restaurant_by_postal_code,
     zips_for_good_meals_by_type,
     getRestaurantsByStateCity,
