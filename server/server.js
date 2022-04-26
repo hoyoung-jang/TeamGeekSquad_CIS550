@@ -30,6 +30,10 @@ app.get('/calc_revisit_rate_by_business_id', routes.calc_revisit_rate_by_busines
 // Route F - register as GET
 app.get('/top_ten_restaurants_by_city_COVID', routes.top_ten_restaurants_by_city_COVID)
 
+// Route G - register as GET
+app.get('/getReview', routes.getReview)
+
+
 app.listen(config.server_port, () => {
     console.log(`Server running at http://${config.server_host}:${config.server_port}/`);
 });

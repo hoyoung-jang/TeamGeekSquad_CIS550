@@ -111,16 +111,18 @@ joining the main Yelp data set against a list of sub-attributes. Recommend
 Top 20 lists (location, cuisine) order by rating
 */
 async function getRestaurantsByStateCity(req, res) {
-    const pagesize = req.query.pagesize ? req.query.pagesize : 20
-    const basicQuery = `SELECT B.* FROM business B, Attribute A WHERE B.business_id = A.business_id`
-    const stateQuery = req.query.state ? `AND B.state LIKE '%${req.query.state}%'`: ``
-    const cityQuery = req.query.city ? `AND B.city LIKE '%${req.query.city}%'`: ``
-    const bikeParkingQuery = req.query.bikeParking ? `AND A.attributes LIKE %"BikeParking": "True"%'` : ``
-    const creditCardsQuery = req.query.creditCards ? `AND A.attributes LIKE %"BusinessAcceptsCreditCards": "True"%'` : ``
-    const deliveryQuery = req.query.delivery ? `AND A.attributes LIKE %"RestaurantsDelivery": "True"%` : ``
-    const takeOutQuery = req.query.takeOut ? `AND A.attributes LIKE %"RestaurantsTakeOut": "True"%` : ``
-    const mealTypeQuery = req.query.mealType ? `AND B.categories LIKE '%${req.query.mealType}%'` : ``
-    const pageQuery = req.query.page? `LIMIT ${pagesize*(page-1)}, ${pagesize}` : ``
+    const pagesize = req.query.pagesize ? req.query.pagesize : 10
+    const basicQuery = req.query.mealType ?
+        `SELECT R.business_id, R.name, R.stars, L.address, L.postal_code AS postalCode, L.lat, L.lon, A.attributes FROM Restaurant R, Attribute A, Location L, Meals M WHERE R.business_id = A.business_id AND R.business_id = L.business_id AND R.business_id = M.business_id`
+        : `SELECT R.name, R.stars, L.address, L.postal_code, L.lat, L.lon, A.attributes FROM Restaurant R, Attribute A, Location L WHERE R.business_id = A.business_id AND R.business_id = L.business_id`
+    const stateQuery = req.query.state ? `AND L.state LIKE '%${req.query.state}%'`: ``
+    const cityQuery = req.query.city ? `AND L.city LIKE '%${req.query.city}%'`: ``
+    const bikeParkingQuery = req.query.bikeParking ? `AND A.attributes LIKE '%"BikeParking": "True"%'` : ``
+    const creditCardsQuery = req.query.creditCards ? `AND A.attributes LIKE '%"BusinessAcceptsCreditCards": "True"%'` : ``
+    const deliveryQuery = req.query.delivery ? `AND A.attributes LIKE '%"RestaurantsDelivery": "True"%` : ``
+    const takeOutQuery = req.query.takeOut ? `AND A.attributes LIKE '%"RestaurantsTakeOut": "True"%` : ``
+    const mealTypeQuery = req.query.mealType ? `AND M.meal_type LIKE '%${req.query.mealType}%'` : ``
+    const pageQuery = req.query.page? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
 
     const query = `${basicQuery} ${stateQuery} ${cityQuery} ${bikeParkingQuery} ${creditCardsQuery} ${deliveryQuery} ${takeOutQuery} ${mealTypeQuery} ORDER BY stars DESC ${pageQuery};`
 
@@ -255,11 +257,37 @@ async function top_ten_restaurants_by_city_COVID(req, res) {
 }
 
 
+/*
+Query a single restaurant and add/remove attributes to customize what
+information is displayed on the screen. For example you want to see
+restaurants that have Bike Parking,  free Wifi. This is accomplished by
+joining the main Yelp data set against a list of sub-attributes. Recommend
+Top 20 lists (location, cuisine) order by rating
+*/
+async function getReview(req, res) {
+    const pagesize = req.query.pagesize ? req.query.pagesize : 10
+    const businessId = req.query.businessId
+    const basicQuery = `SELECT text FROM Review WHERE business_id = '${businessId}'`
+    const pageQuery = req.query.page? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
+    const query = `${basicQuery} ${pageQuery};`
+
+    connection.query(query, function (error, results, fields) {
+        if (error) {
+            console.log(error)
+            res.json({error: error})
+        } else if (results) {
+            res.json({results: results})
+        }
+    });
+}
+
+
 module.exports = {
     restaurant_by_postal_code,
     zips_for_good_meals_by_type,
     getRestaurantsByStateCity,
     filter_neighborhoods,
     calc_revisit_rate_by_business_id,
-    top_ten_restaurants_by_city_COVID
+    top_ten_restaurants_by_city_COVID,
+    getReview
 }
