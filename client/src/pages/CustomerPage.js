@@ -9,7 +9,7 @@ import {
     Col,
     Divider,
     Select,
-    Slider
+    Slider, Checkbox
 } from 'antd'
 
 import { getRestaurantByPostalCode,
@@ -51,11 +51,14 @@ class CustomerPage extends React.Component {
         this.deliveryChange = this.deliveryChange.bind(this)
         this.takeOutChange = this.takeOutChange.bind(this)
         this.mealTypeChange = this.mealTypeChange.bind(this)
+        this.pageChange = this.pageChange.bind(this)
         this.handleStarsChange = this.handleStarsChange.bind(this)
+
+        this.updateGetRestaurantsByStateCity = this.updateGetRestaurantsByStateCity.bind(this)
     }
 
-    stateChange(event) {
-        this.setState({state: event.target.value})
+    stateChange(value) {
+        this.setState({state: value})
     }
 
     cityChange(event) {
@@ -63,19 +66,35 @@ class CustomerPage extends React.Component {
     }
 
     bikeParkingChange(event) {
-        this.setState({bikeParking: event.target.value})
+        if (event.target.checked) {
+            this.setState({bikeParking: 1})
+        } else {
+            this.setState({bikeParking: null})
+        }
     }
 
     creditCardsChange(event) {
-        this.setState({creditCards: event.target.value})
+        if (event.target.checked) {
+            this.setState({creditCards: 1})
+        } else {
+            this.setState({creditCards: null})
+        }
     }
 
     deliveryChange(event) {
-        this.setState({delivery: event.target.value})
+        if (event.target.checked) {
+            this.setState({delivery: 1})
+        } else {
+            this.setState({delivery: null})
+        }
     }
 
     takeOutChange(event) {
-        this.setState({takeOut: event.target.value})
+        if (event.target.checked) {
+            this.setState({takeOut: 1})
+        } else {
+            this.setState({takeOut: null})
+        }
     }
 
     mealTypeChange(event) {
@@ -92,8 +111,9 @@ class CustomerPage extends React.Component {
     }
 
     updateGetRestaurantsByStateCity() {
-        getRestaurantsByStateCity(this.state.state, this.state.city, this.state.bikeParking, this.state.creditCards, this.state.delivery  , this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
-            this.setState({restaurantsResults: res.results})
+        getRestaurantsByStateCity(this.state.state, this.state.city, this.state.starsHigh, this.state.starsLow,
+            this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
+            this.setState({ restaurantsResults: res.results })
         })
     }
 
@@ -103,8 +123,9 @@ class CustomerPage extends React.Component {
 
 
     componentDidMount() {
-        // getRestaurantsByStateCity(this.state.state, this.state.city, this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
-        //     this.setState({restaurantsResults: res.results})
+        // getRestaurantsByStateCity(this.state.state, this.state.city, this.state.starsHigh, this.state.starsLow,
+        //     this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
+        //     this.setState({ restaurantsResults: res.results })
         // })
     }
 
@@ -116,82 +137,108 @@ class CustomerPage extends React.Component {
                     <Row>
                         <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>State</label><br/>
-                            <Select defaultValue="PA" value={this.state.state} style={{ width: 180 }} onChange={this.stateChange}>
-                                <Option Value='AL'>Alabama</Option>
-                                <Option Value='AK'>Alaska</Option>
-                                <Option Value='AZ'>Arizona</Option>
-                                <Option Value='AR'>Arkansas</Option>
-                                <Option Value='CA'>California</Option>
-                                <Option Value='CZ'>Canal Zone</Option>
-                                <Option Value='CO'>Colorado</Option>
-                                <Option Value='CT'>Connecticut</Option>
-                                <Option Value='DE'>Delaware</Option>
-                                <Option Value='DC'>District of Columbia</Option>
-                                <Option Value='FL'>Florida</Option>
-                                <Option Value='GA'>Georgia</Option>
-                                <Option Value='GU'>Guam</Option>
-                                <Option Value='HI'>Hawaii</Option>
-                                <Option Value='ID'>Idaho</Option>
-                                <Option Value='IL'>Illinois</Option>
-                                <Option Value='IN'>Indiana</Option>
-                                <Option Value='IA'>Iowa</Option>
-                                <Option Value='KS'>Kansas</Option>
-                                <Option Value='KY'>Kentucky</Option>
-                                <Option Value='LA'>Louisiana</Option>
-                                <Option Value='ME'>Maine</Option>
-                                <Option Value='MD'>Maryland</Option>
-                                <Option Value='MA'>Massachusetts</Option>
-                                <Option Value='MI'>Michigan</Option>
-                                <Option Value='MN'>Minnesota</Option>
-                                <Option Value='MS'>Mississippi</Option>
-                                <Option Value='MO'>Missouri</Option>
-                                <Option Value='MT'>Montana</Option>
-                                <Option Value='NE'>Nebraska</Option>
-                                <Option Value='NV'>Nevada</Option>
-                                <Option Value='NH'>New Hampshire</Option>
-                                <Option Value='NJ'>New Jersey</Option>
-                                <Option Value='NM'>New Mexico</Option>
-                                <Option Value='NY'>New York</Option>
-                                <Option Value='NC'>North Carolina</Option>
-                                <Option Value='ND'>North Dakota</Option>
-                                <Option Value='OH'>Ohio</Option>
-                                <Option Value='OK'>Oklahoma</Option>
-                                <Option Value='OR'>Oregon</Option>
-                                <Option Value='PA'>Pennsylvania</Option>
-                                <Option Value='PR'>Puerto Rico</Option>
-                                <Option Value='RI'>Rhode Island</Option>
-                                <Option Value='SC'>South Carolina</Option>
-                                <Option Value='SD'>South Dakota</Option>
-                                <Option Value='TN'>Tennessee</Option>
-                                <Option Value='TX'>Texas</Option>
-                                <Option Value='UT'>Utah</Option>
-                                <Option Value='VT'>Vermont</Option>
-                                <Option Value='VI'>Virgin Islands</Option>
-                                <Option Value='VA'>Virginia</Option>
-                                <Option Value='WA'>Washington</Option>
-                                <Option Value='WV'>West Virginia</Option>
-                                <Option Value='WI'>Wisconsin</Option>
-                                <Option Value='WY'>Wyoming</Option>
+                            <Select defaultValue="PA" style={{ width: 180 }} onChange={this.stateChange}>
+                                <Option value="AL">Alabama</Option>
+                                <Option value="AK">Alaska</Option>
+                                <Option value="AZ">Arizona</Option>
+                                <Option value="AR">Arkansas</Option>
+                                <Option value="CA">California</Option>
+                                <Option value="CZ">Canal Zone</Option>
+                                <Option value="CO">Colorado</Option>
+                                <Option value="CT">Connecticut</Option>
+                                <Option value="DE">Delaware</Option>
+                                <Option value="DC">District of Columbia</Option>
+                                <Option value="FL">Florida</Option>
+                                <Option value="GA">Georgia</Option>
+                                <Option value="GU">Guam</Option>
+                                <Option value="HI">Hawaii</Option>
+                                <Option value="ID">Idaho</Option>
+                                <Option value="IL">Illinois</Option>
+                                <Option value="IN">Indiana</Option>
+                                <Option value="IA">Iowa</Option>
+                                <Option value="KS">Kansas</Option>
+                                <Option value="KY">Kentucky</Option>
+                                <Option value="LA">Louisiana</Option>
+                                <Option value="ME">Maine</Option>
+                                <Option value="MD">Maryland</Option>
+                                <Option value="MA">Massachusetts</Option>
+                                <Option value="MI">Michigan</Option>
+                                <Option value="MN">Minnesota</Option>
+                                <Option value="MS">Mississippi</Option>
+                                <Option value="MO">Missouri</Option>
+                                <Option value="MT">Montana</Option>
+                                <Option value="NE">Nebraska</Option>
+                                <Option value="NV">Nevada</Option>
+                                <Option value="NH">New Hampshire</Option>
+                                <Option value="NJ">New Jersey</Option>
+                                <Option value="NM">New Mexico</Option>
+                                <Option value="NY">New York</Option>
+                                <Option value="NC">North Carolina</Option>
+                                <Option value="ND">North Dakota</Option>
+                                <Option value="OH">Ohio</Option>
+                                <Option value="OK">Oklahoma</Option>
+                                <Option value="OR">Oregon</Option>
+                                <Option value="PA">Pennsylvania</Option>
+                                <Option value="PR">Puerto Rico</Option>
+                                <Option value="RI">Rhode Island</Option>
+                                <Option value="SC">South Carolina</Option>
+                                <Option value="SD">South Dakota</Option>
+                                <Option value="TN">Tennessee</Option>
+                                <Option value="TX">Texas</Option>
+                                <Option value="UT">Utah</Option>
+                                <Option value="VT">Vermont</Option>
+                                <Option value="VI">Virgin Islands</Option>
+                                <Option value="VA">Virginia</Option>
+                                <Option value="WA">Washington</Option>
+                                <Option value="WV">West Virginia</Option>
+                                <Option value="WI">Wisconsin</Option>
+                                <Option value="WY">Wyoming</Option>
                             </Select>
                         </FormGroup></Col>
+
                         <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>City</label>
                             <FormInput placeholder="City" value={this.state.city} onChange={this.cityChange} />
                         </FormGroup></Col>
+
                         <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>Meal Type</label>
                             <FormInput placeholder="Meal Type" value={this.state.mealType} onChange={this.mealTypeChange} />
                         </FormGroup></Col>
+
                         <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>Stars</label>
                             <Slider range defaultValue={[0,5]} max={5} min={0} step={0.5} onChange={this.handleStarsChange} />
                         </FormGroup></Col>
+
                         <Col flex={2}><FormGroup style={{ width: '10vw' }}>
                             <Button style={{ marginTop: '4vh' }} onClick={this.updateGetRestaurantsByStateCity}>Search</Button>
                         </FormGroup></Col>
 
                     </Row>
 
+                    <Row>
+                        <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
+                            <label>Bike Parking</label><br/>
+                            <Checkbox defaultChecked={false} onChange={this.bikeParkingChange} />
+                        </FormGroup></Col>
+
+                        <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
+                            <label>Accepting Credit Cards</label><br/>
+                            <Checkbox defaultChecked={false} onChange={this.creditCardsChange} />
+                        </FormGroup></Col>
+
+                        <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
+                            <label>Delivery</label><br/>
+                            <Checkbox defaultChecked={false} onChange={this.deliveryChange} />
+                        </FormGroup></Col>
+
+                        <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
+                            <label>Takeout</label><br/>
+                            <Checkbox defaultChecked={false} onChange={this.takeOutChange} />
+                        </FormGroup></Col>
+
+                    </Row>
 
                 </Form>
                 <Divider />
@@ -222,9 +269,6 @@ class CustomerPage extends React.Component {
                     </Table>
 
                 </div>
-
-
-
 
 
 

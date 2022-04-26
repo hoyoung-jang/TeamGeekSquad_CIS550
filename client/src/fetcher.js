@@ -17,8 +17,8 @@ const getZipsForGoodMealsByType = async (meal_type, page, pagesize) => {
 }
 
 
-const getRestaurantsByStateCity = async (state, city, bikeParking, creditCards, delivery, takeOut, mealType, page, pagesize) => {
-    var res = await fetch(`http://${config.server_host}:${config.server_port}/getRestaurantsByStateCity?state=${state}?city=${city}&bikeParking=${bikeParking}&creditCards=${creditCards}&delivery=${delivery}&takeOut=${takeOut}&mealType=${mealType}&page=${page}&pagesize=${pagesize}`, {
+const getRestaurantsByStateCity = async (state, city, starsHigh, starsLow, bikeParking, creditCards, delivery, takeOut, mealType, page, pagesize) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getRestaurantsByStateCity?state=${state}&city=${city}&starsHigh=${starsHigh}&starsLow=${starsLow}&bikeParking=${bikeParking}&creditCards=${creditCards}&delivery=${delivery}&takeOut=${takeOut}&mealType=${mealType}&page=${page}&pagesize=${pagesize}`, {
         method: 'GET',
     })
     return res.json()
