@@ -19,7 +19,7 @@ app.get('/restaurant_by_postal_code', routes.restaurant_by_postal_code)
 app.get('/zips_for_good_meals_by_type', routes.zips_for_good_meals_by_type)
 
 // Route C - register as GET
-app.get('/filter_attributes', routes.filter_attributes)
+app.get('/getRestaurantsByStateCity', routes.getRestaurantsByStateCity)
 
 // Route D - register as GET
 app.get('/filter_neighborhoods', routes.filter_neighborhoods)

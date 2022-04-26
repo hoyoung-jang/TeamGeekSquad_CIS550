@@ -110,51 +110,28 @@ restaurants that have Bike Parking,  free Wifi. This is accomplished by
 joining the main Yelp data set against a list of sub-attributes. Recommend
 Top 20 lists (location, cuisine) order by rating
 */
-async function filter_attributes(req, res) {
-    const state = req.query.Name ? req.query.State : 'CA'
-    const bike_parking = req.query.bike_parking ? req.query.bike_parking : 'True'
-    const wifi = req.query.wifi ? req.query.wifi : 'free'
-    const page = req.query.page
+async function getRestaurantsByStateCity(req, res) {
     const pagesize = req.query.pagesize ? req.query.pagesize : 20
+    const basicQuery = `SELECT B.* FROM business B, Attribute A WHERE B.business_id = A.business_id`
+    const stateQuery = req.query.state ? `AND B.state LIKE '%${req.query.state}%'`: ``
+    const cityQuery = req.query.city ? `AND B.city LIKE '%${req.query.city}%'`: ``
+    const bikeParkingQuery = req.query.bikeParking ? `AND A.attributes LIKE %"BikeParking": "True"%'` : ``
+    const creditCardsQuery = req.query.creditCards ? `AND A.attributes LIKE %"BusinessAcceptsCreditCards": "True"%'` : ``
+    const deliveryQuery = req.query.delivery ? `AND A.attributes LIKE %"RestaurantsDelivery": "True"%` : ``
+    const takeOutQuery = req.query.takeOut ? `AND A.attributes LIKE %"RestaurantsTakeOut": "True"%` : ``
+    const mealTypeQuery = req.query.mealType ? `AND B.categories LIKE '%${req.query.mealType}%'` : ``
+    const pageQuery = req.query.page? `LIMIT ${pagesize*(page-1)}, ${pagesize}` : ``
 
-    if (page && !isNaN(page)) {
-        // This is the case where page is defined.
-        connection.query(`
-        select a.*
-        from Restaurant a, Attribute b
-        where 1=1
-        and a.business_id = b.business_id
-        and b.attributes like '%"BikeParking": ${bike_parking}%'
-        and b.attributes like '%"WiFi": "${wifi}"%'
-        order by stars desc
-        LIMIT ${pagesize*(page-1)}, ${pagesize};`, function (error, results, fields) {
+    const query = `${basicQuery} ${stateQuery} ${cityQuery} ${bikeParkingQuery} ${creditCardsQuery} ${deliveryQuery} ${takeOutQuery} ${mealTypeQuery} ORDER BY stars DESC ${pageQuery};`
 
-            if (error) {
-                console.log(error)
-                res.json({error: error})
-            } else if (results) {
-                res.json({results: results})
-            }
-        });
-    } else {
-        // This is the case where page is not defined.
-        connection.query(`
-        select a.*
-        from Restaurant a, Attribute b
-        where 1=1
-        and a.business_id = b.business_id
-        and b.attributes like '%"BikeParking": ${bike_parking}%'
-        and b.attributes like '%"WiFi": "${wifi}"%'
-        order by stars desc`, function (error, results, fields) {
-
-            if (error) {
-                console.log(error)
-                res.json({error: error})
-            } else if (results) {
-                res.json({results: results})
-            }
-        });
-    }
+    connection.query(query, function (error, results, fields) {
+        if (error) {
+            console.log(error)
+            res.json({error: error})
+        } else if (results) {
+            res.json({results: results})
+        }
+    });
 }
 
 
@@ -166,7 +143,7 @@ by near-by postal code
  */
 async function filter_neighborhoods(req, res) {
 
-    const state = req.query.Name ? req.query.State : 'CA'
+    const state = req.query.state ? req.query.state : 'CA'
     const postal_code = req.query.postal_code ? req.query.postal_code : '93'
     const meal_type = req.query.meal_type ? req.query.meal_type : 'Italian'
     const page = req.query.page
@@ -281,7 +258,7 @@ async function top_ten_restaurants_by_city_COVID(req, res) {
 module.exports = {
     restaurant_by_postal_code,
     zips_for_good_meals_by_type,
-    filter_attributes,
+    getRestaurantsByStateCity,
     filter_neighborhoods,
     calc_revisit_rate_by_business_id,
     top_ten_restaurants_by_city_COVID

@@ -12,11 +12,11 @@ import {
 } from 'antd'
 
 import { getRestaurantByPostalCode,
-    // getZipsForGoodMealsByType,
-    getFilterAttributes,
-    getFilterNeighborhoods
-    // getCalcRevisitRateByBusinessId,
-    // getTopTenRestaurantsByCityCOVID
+    getZipsForGoodMealsByType,
+    getRestaurantsByStateCity,
+    getFilterNeighborhoods,
+    getCalcRevisitRateByBusinessId,
+    getTopTenRestaurantsByCityCOVID
 } from '../fetcher'
 
 import MenuBar from '../components/MenuBar';
@@ -31,8 +31,8 @@ class CustomerPage extends React.Component {
         this.state = {
             states: "CA",
             city: "LA",
-            bikeParking: false,
-            wifi: true,
+            bikeParking: "False",
+            wifi: "True",
             postalCode: 33707,
             mealType: 'Italian',
             restaurantResults: []
@@ -61,9 +61,8 @@ class CustomerPage extends React.Component {
     }
 
 
-
-    updateFilterAttirubtes(){
-        getFilterAttributes().then(res => {
+    updateGetRestaurantsByStateCity(){
+        getRestaurantsByStateCity().then(res => {
             this.setState({ restaurantResults: res.results })
         })
     }
@@ -78,13 +77,13 @@ class CustomerPage extends React.Component {
 
 
     componentDidMount() {
-        getFilterAttributes().then(res => {
-            this.setState({ matchesResults: res.results })
-        })
-
-        getRestaurantByPostalCode(this.state.postalCode).then(res => {
-            this.setState({ restaurantResults: res.results[0] })
-        })
+        // getFilterAttributes().then(res => {
+        //     this.setState({ matchesResults: res.results })
+        // })
+        //
+        // getRestaurantByPostalCode(this.state.postalCode).then(res => {
+        //     this.setState({ restaurantResults: res.results[0] })
+        // })
 
     }
 
@@ -114,32 +113,31 @@ class CustomerPage extends React.Component {
                 {/* TASK 12: Copy over your implementation of the matches table from the home page */}
 
                 <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
-                    <h3>Matches</h3>
-                    <Select defaultValue="CA" style={{ width: 120 }} onChange={this.statesChange}>
-                        <Option value="CA">California</Option>
-                        {/* TASK 3: Take a look at Dataset Information.md from MS1 and add other options to the selector here  */}
+                    <h3>States</h3>
+                    <Select defaultValue="PA" style={{ width: 120 }} onChange={this.statesChange}>
                         <Option value="PA">Pennsylvania</Option>
+                        <Option value="CA">California</Option>
                     </Select>
 
-                    {/*<Table onRow={(record, rowIndex) => {*/}
-                    {/*    return {*/}
-                    {/*        onClick: event => {this.goToMatch(record.MatchId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter*/}
-                    {/*    };*/}
-                    {/*}} dataSource={this.state.matchesResults} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}>*/}
-                    {/*    <ColumnGroup title="Teams">*/}
+                    <Table onRow={(record, rowIndex) => {
+                        return {
+                            onClick: event => {this.goToMatch(record.MatchId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
+                        };
+                    }} dataSource={this.state.matchesResults} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}>
+                        <ColumnGroup title="Teams">
 
-                    {/*        <Column title="Home" dataIndex="Home" key="Home" sorter= {(a, b) => a.Home.localeCompare(b.Home)}/>*/}
-                    {/*        <Column title="Away" dataIndex="Away" key="Away" sorter= {(a, b) => a.Away.localeCompare(b.Away)}/>*/}
-                    {/*    </ColumnGroup>*/}
-                    {/*    <ColumnGroup title="Goals">*/}
+                            <Column title="Home" dataIndex="Home" key="Home" sorter= {(a, b) => a.Home.localeCompare(b.Home)}/>
+                            <Column title="Away" dataIndex="Away" key="Away" sorter= {(a, b) => a.Away.localeCompare(b.Away)}/>
+                        </ColumnGroup>
+                        <ColumnGroup title="Goals">
 
-                    {/*        <Column title="HomeGoals" dataIndex="HomeGoals" key="HomeGoals" sorter= {(a, b) => a.HomeGoals - b.HomeGoals}/>*/}
-                    {/*        <Column title="AwayGoals" dataIndex="AwayGoals" key="AwayGoals" sorter= {(a, b) => a.AwayGoals - b.AwayGoals}/>*/}
-                    {/*    </ColumnGroup>*/}
+                            <Column title="HomeGoals" dataIndex="HomeGoals" key="HomeGoals" sorter= {(a, b) => a.HomeGoals - b.HomeGoals}/>
+                            <Column title="AwayGoals" dataIndex="AwayGoals" key="AwayGoals" sorter= {(a, b) => a.AwayGoals - b.AwayGoals}/>
+                        </ColumnGroup>
 
-                    {/*    <Column title="Date" dataIndex="Date" key="Date"/>*/}
-                    {/*    <Column title="Time" dataIndex="Time" key="Time"/>*/}
-                    {/*</Table>*/}
+                        <Column title="Date" dataIndex="Date" key="Date"/>
+                        <Column title="Time" dataIndex="Time" key="Time"/>
+                    </Table>
 
                 </div>
 

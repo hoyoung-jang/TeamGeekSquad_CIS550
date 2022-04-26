@@ -17,8 +17,8 @@ const getZipsForGoodMealsByType = async (meal_type, page, pagesize) => {
 }
 
 
-const getFilterAttributes = async (state, bike_parking, wifi, page, pagesize) => {
-    var res = await fetch(`http://${config.server_host}:${config.server_port}/filter_attributes?state=${state}&bike_parking=${bike_parking}&wifi=${wifi}&page=${page}&pagesize=${pagesize}`, {
+const getRestaurantsByStateCity = async (state, city, bikeParking, creditCards, delivery, takeOut, mealType, page, pagesize) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getRestaurantsByStateCity?state=${state}?city=${city}&bikeParking=${bikeParking}&creditCards=${creditCards}&delivery=${delivery}&takeOut=${takeOut}&mealType=${mealType}&page=${page}&pagesize=${pagesize}`, {
         method: 'GET',
     })
     return res.json()
@@ -51,7 +51,7 @@ const getTopTenRestaurantsByCityCOVID = async (city, page, pagesize) => {
 export {
     getRestaurantByPostalCode,
     getZipsForGoodMealsByType,
-    getFilterAttributes,
+    getRestaurantsByStateCity,
     getFilterNeighborhoods,
     getCalcRevisitRateByBusinessId,
     getTopTenRestaurantsByCityCOVID
