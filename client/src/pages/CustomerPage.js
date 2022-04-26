@@ -8,7 +8,8 @@ import {
     Row,
     Col,
     Divider,
-    Select
+    Select,
+    Slider
 } from 'antd'
 
 import { getRestaurantByPostalCode,
@@ -35,10 +36,12 @@ class CustomerPage extends React.Component {
             creditCards: null,
             delivery: null,
             takeOut: null,
-            mealType: 'Italian',
+            mealType: "Italian",
             restaurantsResults: [],
             page: 1,
-            pagesize: 10
+            pagesize: 10,
+            starsLow: 0,
+            starsHigh: 5
         }
 
         this.stateChange = this.stateChange.bind(this)
@@ -48,55 +51,61 @@ class CustomerPage extends React.Component {
         this.deliveryChange = this.deliveryChange.bind(this)
         this.takeOutChange = this.takeOutChange.bind(this)
         this.mealTypeChange = this.mealTypeChange.bind(this)
+        this.handleStarsChange = this.handleStarsChange.bind(this)
     }
 
     stateChange(event) {
-        this.setState({state: event.target.state})
+        this.setState({state: event.target.value})
     }
 
     cityChange(event) {
-        this.setState({city: event.target.city})
+        this.setState({city: event.target.value})
     }
 
     bikeParkingChange(event) {
-        this.setState({bikeParking: event.target.bikeParking})
+        this.setState({bikeParking: event.target.value})
     }
 
     creditCardsChange(event) {
-        this.setState({creditCards: event.target.creditCards})
+        this.setState({creditCards: event.target.value})
     }
 
     deliveryChange(event) {
-        this.setState({delivery: event.target.delivery})
+        this.setState({delivery: event.target.value})
     }
 
     takeOutChange(event) {
-        this.setState({takeOut: event.target.takeOut})
+        this.setState({takeOut: event.target.value})
     }
 
     mealTypeChange(event) {
-        this.setState({mealType: event.target.mealType})
+        this.setState({mealType: event.target.value})
     }
 
     pageChange(event) {
-        this.setState({page: event.target.page})
+        this.setState({page: event.target.value})
+    }
+
+    handleStarsChange(value) {
+        this.setState({starsLow: value[0]})
+        this.setState({starsHigh: value[1]})
     }
 
     updateGetRestaurantsByStateCity() {
-        getRestaurantsByStateCity(this.state.state, this.state.city, null, null, null  , null, this.state.mealType, null, null).then(res => {
+        getRestaurantsByStateCity(this.state.state, this.state.city, this.state.bikeParking, this.state.creditCards, this.state.delivery  , this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
             this.setState({restaurantsResults: res.results})
         })
     }
 
-    // goToReview(businessId) {
-    //     window.location = `/reviews?id=${businessId}`
-    // }
+    goToReview(businessId) {
+        window.location = `/reviews?id=${businessId}`
+    }
 
 
     componentDidMount() {
-        getRestaurantsByStateCity(this.state.state, this.state.city, this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
-            this.setState({restaurantsResults: res.results})
-        })
+        // getRestaurantsByStateCity(this.state.state, this.state.city, this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
+        //     this.setState({restaurantsResults: res.results})
+        // })
     }
 
     render() {
@@ -105,7 +114,7 @@ class CustomerPage extends React.Component {
                 <MenuBar />
                 <Form style={{ width: '80vw', margin: '0 auto', marginTop: '5vh' }}>
                     <Row>
-                        <Col flex={2}><FormGroup style={{ width: '20vw', margin: '0 auto' }}>
+                        <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>State</label><br/>
                             <Select defaultValue="PA" value={this.state.state} style={{ width: 180 }} onChange={this.stateChange}>
                                 <Option Value='AL'>Alabama</Option>
@@ -165,13 +174,17 @@ class CustomerPage extends React.Component {
                                 <Option Value='WY'>Wyoming</Option>
                             </Select>
                         </FormGroup></Col>
-                        <Col flex={2}><FormGroup style={{ width: '20vw', margin: '0 auto' }}>
+                        <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>City</label>
                             <FormInput placeholder="City" value={this.state.city} onChange={this.cityChange} />
                         </FormGroup></Col>
-                        <Col flex={2}><FormGroup style={{ width: '20vw', margin: '0 auto' }}>
+                        <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>Meal Type</label>
                             <FormInput placeholder="Meal Type" value={this.state.mealType} onChange={this.mealTypeChange} />
+                        </FormGroup></Col>
+                        <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
+                            <label>Stars</label>
+                            <Slider range defaultValue={[0,5]} max={5} min={0} step={0.5} onChange={this.handleStarsChange} />
                         </FormGroup></Col>
                         <Col flex={2}><FormGroup style={{ width: '10vw' }}>
                             <Button style={{ marginTop: '4vh' }} onClick={this.updateGetRestaurantsByStateCity}>Search</Button>
@@ -193,22 +206,19 @@ class CustomerPage extends React.Component {
 
                     <Table onRow={(record, rowIndex) => {
                         return {
-                            onClick: event => {this.goToMatch(record.MatchId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
+                            onClick: event => {this.goToReview(record.businessId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
                         };
                     }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}>
                         <ColumnGroup title="Teams">
-
-                            <Column title="Home" dataIndex="Home" key="Home" sorter= {(a, b) => a.Home.localeCompare(b.Home)}/>
-                            <Column title="Away" dataIndex="Away" key="Away" sorter= {(a, b) => a.Away.localeCompare(b.Away)}/>
+                            <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}/>
+                            <Column title="Stars" dataIndex="stars" key="stars" sorter= {(a, b) => a.stars.localeCompare(b.stars)}/>
                         </ColumnGroup>
-                        <ColumnGroup title="Goals">
-
-                            <Column title="HomeGoals" dataIndex="HomeGoals" key="HomeGoals" sorter= {(a, b) => a.HomeGoals - b.HomeGoals}/>
-                            <Column title="AwayGoals" dataIndex="AwayGoals" key="AwayGoals" sorter= {(a, b) => a.AwayGoals - b.AwayGoals}/>
+                        <ColumnGroup title="Location Info">
+                            <Column title="Address" dataIndex="address" key="address" sorter= {(a, b) => a.address - b.address}/>
+                            <Column title="Postal Code" dataIndex="postalCode" key="postalCode" sorter= {(a, b) => a.postalCode - b.postalCode}/>
+                            <Column title="Latitude" dataIndex="lat" key="lat" sorter= {(a, b) => a.lat - b.lat}/>
+                            <Column title="Longitude" dataIndex="lon" key="lon" sorter= {(a, b) => a.lon - b.lon}/>
                         </ColumnGroup>
-
-                        <Column title="Date" dataIndex="Date" key="Date"/>
-                        <Column title="Time" dataIndex="Time" key="Time"/>
                     </Table>
 
                 </div>

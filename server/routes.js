@@ -122,6 +122,13 @@ async function getRestaurantsByStateCity(req, res) {
     const deliveryQuery = req.query.delivery ? `AND A.attributes LIKE '%"RestaurantsDelivery": "True"%` : ``
     const takeOutQuery = req.query.takeOut ? `AND A.attributes LIKE '%"RestaurantsTakeOut": "True"%` : ``
     const mealTypeQuery = req.query.mealType ? `AND M.meal_type LIKE '%${req.query.mealType}%'` : ``
+
+    // const bikeParkingQuery = ``
+    // const creditCardsQuery = ``
+    // const deliveryQuery = ``
+    // const takeOutQuery = ``
+    // const mealTypeQuery = ``
+
     const pageQuery = req.query.page? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
 
     const query = `${basicQuery} ${stateQuery} ${cityQuery} ${bikeParkingQuery} ${creditCardsQuery} ${deliveryQuery} ${takeOutQuery} ${mealTypeQuery} ORDER BY stars DESC ${pageQuery};`
