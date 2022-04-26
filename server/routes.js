@@ -298,10 +298,10 @@ restaurants that have Bike Parking,  free Wifi. This is accomplished by
 joining the main Yelp data set against a list of sub-attributes. Recommend
 Top 20 lists (location, cuisine) order by rating
 */
-async function getReview(req, res) {
+async function getReviews(req, res) {
     const pagesize = req.query.pagesize ? req.query.pagesize : 10
     const businessId = req.query.businessId
-    const basicQuery = `SELECT text FROM Review WHERE business_id = '${businessId}'`
+    const basicQuery = `SELECT business_id, text AS review FROM Review WHERE business_id = '${businessId}'`
     const pageQuery = req.query.page? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
     const query = `${basicQuery} ${pageQuery};`
 
@@ -324,5 +324,5 @@ module.exports = {
     filter_neighborhoods,
     calc_revisit_rate_by_business_id,
     top_ten_restaurants_by_city_COVID,
-    getReview
+    getReviews
 }

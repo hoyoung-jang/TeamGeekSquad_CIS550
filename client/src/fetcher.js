@@ -55,8 +55,8 @@ const getTopTenRestaurantsByCityCOVID = async (city, page, pagesize) => {
     return res.json()
 }
 
-const getReview = async (businessId, page, pagesize) => {
-    var res = await fetch(`http://${config.server_host}:${config.server_port}/top_ten_restaurants_by_city_COVID?businessId=${businessId}&page=${page}&pagesize=${pagesize}`, {
+const getReviews = async (businessId, page, pagesize) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getReview?businessId=${businessId}&page=${page}&pagesize=${pagesize}`, {
         method: 'GET',
     })
     return res.json()
@@ -70,5 +70,6 @@ export {
     getRestaurantsByStateCity,
     getFilterNeighborhoods,
     getCalcRevisitRateByBusinessId,
-    getTopTenRestaurantsByCityCOVID
+    getTopTenRestaurantsByCityCOVID,
+    getReviews
 }
