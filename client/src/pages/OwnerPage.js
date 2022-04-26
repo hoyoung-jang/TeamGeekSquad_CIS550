@@ -18,7 +18,7 @@ import { format } from 'd3-format';
 
 
 import MenuBar from '../components/MenuBar';
-import { getPlayerSearch, getPlayer } from '../fetcher'
+import { getFilterNeighborhoods, getCalcRevisitRateByBusinessId} from '../fetcher'
 const wideFormat = format('.3r');
 
 const playerColumns = [
@@ -124,25 +124,29 @@ class PlayersPage extends React.Component {
 
 
 
-    updateSearchResults() {
+     updateSearchResults() {
+        
 
+
+     }
+/*
         //TASK 23: call getPlayerSearch and update playerResults in state. See componentDidMount() for a hint
         getPlayerSearch(this.state.nameQuery, this.state.nationalityQuery, this.state.clubQuery, this.state.ratingHighQuery, this.state.ratingLowQuery, this.state.potHighQuery, this.state.potLowQuery, null, null).then(res => {
             this.setState({ playersResults: res.results })
         })
-    }
+    } */
 
-    componentDidMount() {
+/*     componentDidMount() {
         getPlayerSearch(this.state.nameQuery, this.state.nationalityQuery, this.state.clubQuery, this.state.ratingHighQuery, this.state.ratingLowQuery, this.state.potHighQuery, this.state.potLowQuery, null, null).then(res => {
             this.setState({ playersResults: res.results })
-        })
+        }) */
 
-        // TASK 25: call getPlayer with the appropriate parameter and set update the correct state variable. 
+/*         // TASK 25: call getPlayer with the appropriate parameter and set update the correct state variable. 
         // See the usage of getMatch in the componentDidMount method of MatchesPage for a hint! 
         getPlayer(this.state.selectedPlayerId).then(res => {
             this.setState({ selectedPlayerDetails: res.results[0] })
-        })
-    }
+        }) */
+//    }
 
     render() {
         return (
