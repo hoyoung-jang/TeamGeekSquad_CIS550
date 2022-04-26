@@ -70,8 +70,8 @@ class HomePage extends React.Component {
       pagination: null  
     }
 
-    this.leagueOnChange = this.leagueOnChange.bind(this)
-    this.goToMatch = this.goToMatch.bind(this)
+    //this.leagueOnChange = this.leagueOnChange.bind(this)
+    //this.goToMatch = this.goToMatch.bind(this)
   }
 
 
