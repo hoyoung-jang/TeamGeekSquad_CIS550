@@ -31,17 +31,18 @@ class CustomerPage extends React.Component {
         super(props)
         this.state = {
             state: "PA",
-            city: "Philadelphia",
+            city: "",
             bikeParking: null,
             creditCards: null,
             delivery: null,
             takeOut: null,
             mealType: "Italian",
             page: 1,
-            pagesize: 10,
+            pagesize: 1000000,
             starsLow: 0,
             starsHigh: 5,
-            restaurantsResults: []
+            restaurantsResults: [],
+            review: []
         }
 
         this.stateChange = this.stateChange.bind(this)
@@ -66,7 +67,7 @@ class CustomerPage extends React.Component {
     }
 
     bikeParkingChange(event) {
-        if (event.target.checked) {
+        if (event.target.checked = true) {
             this.setState({bikeParking: 1})
         } else {
             this.setState({bikeParking: null})
@@ -74,7 +75,7 @@ class CustomerPage extends React.Component {
     }
 
     creditCardsChange(event) {
-        if (event.target.checked) {
+        if (event.target.checked = true) {
             this.setState({creditCards: 1})
         } else {
             this.setState({creditCards: null})
@@ -82,7 +83,7 @@ class CustomerPage extends React.Component {
     }
 
     deliveryChange(event) {
-        if (event.target.checked) {
+        if (event.target.checked = true) {
             this.setState({delivery: 1})
         } else {
             this.setState({delivery: null})
@@ -90,7 +91,7 @@ class CustomerPage extends React.Component {
     }
 
     takeOutChange(event) {
-        if (event.target.checked) {
+        if (event.target.checked = true) {
             this.setState({takeOut: 1})
         } else {
             this.setState({takeOut: null})
@@ -247,22 +248,17 @@ class CustomerPage extends React.Component {
                 {/* TASK 12: Copy over your implementation of the matches table from the home page */}
 
                 <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
-                    {/*<h3>State</h3>*/}
-                    {/*<Select defaultValue="PA" style={{ width: 120 }} onChange={this.stateChange}>*/}
-                    {/*    <Option value="PA">Pennsylvania</Option>*/}
-                    {/*    <Option value="CA">California</Option>*/}
-                    {/*</Select>*/}
-
                     <Table onRow={(record, rowIndex) => {
                         return {
-                            onClick: event => {this.goToReview(record.businessId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
+                            onClick: event => {this.goToReview(record.business_id)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
                         };
-                    }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 10, showQuickJumper:true }}>
+                    }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
                         <ColumnGroup title="Teams">
                             <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}/>
                             <Column title="Stars" dataIndex="stars" key="stars" sorter= {(a, b) => a.stars - b.stars}/>
                         </ColumnGroup>
                         <ColumnGroup title="Location Info">
+                            <Column title="City" dataIndex="city" key="city" sorter= {(a, b) => a.city.localeCompare(b.city)}/>
                             <Column title="Address" dataIndex="address" key="address" sorter= {(a, b) => a.address.localeCompare(b.address)}/>
                             <Column title="Postal Code" dataIndex="postalCode" key="postalCode" sorter= {(a, b) => a.postalCode - b.postalCode}/>
                             <Column title="Latitude" dataIndex="lat" key="lat" sorter= {(a, b) => a.lat - b.lat}/>
