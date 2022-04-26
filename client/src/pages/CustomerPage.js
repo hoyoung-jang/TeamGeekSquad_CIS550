@@ -112,9 +112,9 @@ class CustomerPage extends React.Component {
 
     updateGetRestaurantsByStateCity() {
         getRestaurantsByStateCity(this.state.state, this.state.city, this.state.starsHigh, this.state.starsLow,
-            this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
-
-            // this.setState({ restaurantsResults: res.results })
+            this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize)
+            .then(res => {
+            this.setState({ restaurantsResults: res.results })
         })
     }
 
@@ -125,12 +125,10 @@ class CustomerPage extends React.Component {
 
     componentDidMount() {
         getRestaurantsByStateCity(this.state.state, this.state.city, this.state.starsHigh, this.state.starsLow,
-            this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
-
-                // this.setState({ restaurantsResults.name : res.results.name, restaurantsResults.stars:res.results.stars, restaurantsResults.address: res.results.address, "postalCode": res.results.postalCode, "lat": res.results.lat, "lon": res.results.lon}] })
-
-            }
-        )
+            this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize)
+            .then(res => {
+                this.setState( {restaurantsResults: res.results} )
+            })
     }
 
     render() {
@@ -259,13 +257,13 @@ class CustomerPage extends React.Component {
                         return {
                             onClick: event => {this.goToReview(record.businessId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
                         };
-                    }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}>
+                    }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 10, showQuickJumper:true }}>
                         <ColumnGroup title="Teams">
                             <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}/>
-                            <Column title="Stars" dataIndex="stars" key="stars" sorter= {(a, b) => a.stars.localeCompare(b.stars)}/>
+                            <Column title="Stars" dataIndex="stars" key="stars" sorter= {(a, b) => a.stars - b.stars}/>
                         </ColumnGroup>
                         <ColumnGroup title="Location Info">
-                            <Column title="Address" dataIndex="address" key="address" sorter= {(a, b) => a.address - b.address}/>
+                            <Column title="Address" dataIndex="address" key="address" sorter= {(a, b) => a.address.localeCompare(b.address)}/>
                             <Column title="Postal Code" dataIndex="postalCode" key="postalCode" sorter= {(a, b) => a.postalCode - b.postalCode}/>
                             <Column title="Latitude" dataIndex="lat" key="lat" sorter= {(a, b) => a.lat - b.lat}/>
                             <Column title="Longitude" dataIndex="lon" key="lon" sorter= {(a, b) => a.lon - b.lon}/>
@@ -274,125 +272,123 @@ class CustomerPage extends React.Component {
 
                 </div>
 
+                {/*<Divider />*/}
+                {/*{this.state.restaurantsResults ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>*/}
+                {/*    <Card>*/}
+                {/*        <CardBody>*/}
 
 
-                <Divider />
-                {this.state.restaurantsResults ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
-                    <Card>
-                        <CardBody>
+                {/*            <Row gutter='30' align='middle' justify='center'>*/}
+                {/*                <Col flex={2} style={{ textAlign: 'left' }}>*/}
+                {/*                    <CardTitle>{this.state.restaurantsResults}</CardTitle>*/}
 
+                {/*                </Col>*/}
+                {/*                <Col flex={2} style={{ textAlign: 'center' }}>*/}
+                {/*                    {this.state.restaurantsResults} at {this.state.restaurantsResults}*/}
+                {/*                </Col>*/}
+                {/*                /!* TASK 13: Add a column with flex = 2, and text alignment = right to display the name of the away team - similar to column 1 in this row *!/*/}
+                {/*                <Col flex={2} style={{ textAlign: 'right' }}>*/}
+                {/*                    <CardTitle>{this.state.restaurantsResults}</CardTitle>*/}
+                {/*                </Col>*/}
 
-                            <Row gutter='30' align='middle' justify='center'>
-                                <Col flex={2} style={{ textAlign: 'left' }}>
-                                    <CardTitle>{this.state.restaurantsResults}</CardTitle>
+                {/*            </Row>*/}
+                {/*            <Row gutter='30' align='middle' justify='center'>*/}
+                {/*                <Col span={9} style={{ textAlign: 'left' }}>*/}
+                {/*                    <h3>{this.state.restaurantsResults}</h3>*/}
+                {/*                </Col >*/}
+                {/*                <Col span={6} style={{ textAlign: 'center' }}>*/}
+                {/*                    Goals*/}
+                {/*                </Col >*/}
+                {/*                /!* TASK 14: Add a column with span = 9, and text alignment = right to display the # of goals the away team scored - similar 1 in this row *!/*/}
 
-                                </Col>
-                                <Col flex={2} style={{ textAlign: 'center' }}>
-                                    {this.state.restaurantsResults} at {this.state.restaurantsResults}
-                                </Col>
-                                {/* TASK 13: Add a column with flex = 2, and text alignment = right to display the name of the away team - similar to column 1 in this row */}
-                                <Col flex={2} style={{ textAlign: 'right' }}>
-                                    <CardTitle>{this.state.restaurantsResults}</CardTitle>
-                                </Col>
+                {/*                <Col span={9} style={{ textAlign: 'right' }}>*/}
+                {/*                    <h3>{this.state.restaurantsResults}</h3>*/}
+                {/*                </Col>*/}
+                {/*            </Row>*/}
+                {/*            /!* TASK 15: create a row for goals at half time similar to the row for 'Goals' above, but use h5 in place of h3!  *!/*/}
 
-                            </Row>
-                            <Row gutter='30' align='middle' justify='center'>
-                                <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h3>{this.state.restaurantsResults}</h3>
-                                </Col >
-                                <Col span={6} style={{ textAlign: 'center' }}>
-                                    Goals
-                                </Col >
-                                {/* TASK 14: Add a column with span = 9, and text alignment = right to display the # of goals the away team scored - similar 1 in this row */}
+                {/*            <Row gutter='30' align='middle' justify='center'>*/}
+                {/*                <Col span={9} style={{ textAlign: 'left' }}>*/}
+                {/*                    <h5>{this.state.restaurantsResults}</h5>*/}
+                {/*                </Col >*/}
+                {/*                <Col span={6} style={{ textAlign: 'center' }}>*/}
+                {/*                    Half-time Goals*/}
+                {/*                </Col >*/}
 
-                                <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h3>{this.state.restaurantsResults}</h3>
-                                </Col>
-                            </Row>
-                            {/* TASK 15: create a row for goals at half time similar to the row for 'Goals' above, but use h5 in place of h3!  */}
-
-                            <Row gutter='30' align='middle' justify='center'>
-                                <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h5>{this.state.restaurantsResults}</h5>
-                                </Col >
-                                <Col span={6} style={{ textAlign: 'center' }}>
-                                    Half-time Goals
-                                </Col >
-
-                                <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h5>{this.state.restaurantsResults}</h5>
-                                </Col>
-                            </Row>
-
-
-
-                            <Row gutter='30' align='middle' justify='center'>
-                                <Col span={9} style={{ textAlign: 'left' }}>
-                                    <Progress value={this.state.restaurantsResults}>{this.state.restaurantsResults}</Progress>
-                                </Col >
-                                <Col span={6} style={{ textAlign: 'center' }}>
-                                    Shot Accuracy
-                                </Col >
-                                <Col span={9} style={{ textAlign: 'right' }}>
-                                    {/* TASK 18: add a progress bar to display the shot accuracy for the away team -  look at the progress bar in column 1 of this row for reference*/}
-                                    <Progress value={this.state.restaurantsResults}>{this.state.restaurantsResults}</Progress>
-                                </Col>
-                            </Row>
-                            <Row gutter='30' align='middle' justify='center'>
-                                <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h5>{this.state.restaurantsResults}</h5>
-                                </Col >
-                                <Col span={6} style={{ textAlign: 'center' }}>
-                                    Corners
-                                </Col >
-                                <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h5>{this.state.restaurantsResults}</h5>
-                                </Col>
-                            </Row>
-                            {/* TASK 16: add a row for fouls cards - check out the above lines for how we did it for corners */}
-                            <Row gutter='30' align='middle' justify='center'>
-                                <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h5>{this.state.restaurantsResults}</h5>
-                                </Col >
-                                <Col span={6} style={{ textAlign: 'center' }}>
-                                    Fouls
-                                </Col >
-                                <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h5>{this.state.restaurantsResults}</h5>
-                                </Col>
-                            </Row>
+                {/*                <Col span={9} style={{ textAlign: 'right' }}>*/}
+                {/*                    <h5>{this.state.restaurantsResults}</h5>*/}
+                {/*                </Col>*/}
+                {/*            </Row>*/}
 
 
 
-                            <Row gutter='30' align='middle' justify='center'>
-                                <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h5>{this.state.restaurantsResults}</h5>
-                                </Col >
-                                <Col span={6} style={{ textAlign: 'center' }}>
-                                    Red Cards
-                                </Col >
-                                <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h5>{this.state.restaurantsResults}</h5>
-                                </Col>
-                            </Row>
-                            {/* TASK 17: add a row for yellow cards - check out the above lines for how we did it for red cards */}
-                            <Row gutter='30' align='middle' justify='center'>
-                                <Col span={9} style={{ textAlign: 'left' }}>
-                                    <h5>{this.state.restaurantsResults}</h5>
-                                </Col >
-                                <Col span={6} style={{ textAlign: 'center' }}>
-                                    Yellow Cards
-                                </Col >
-                                <Col span={9} style={{ textAlign: 'right' }}>
-                                    <h5>{this.state.restaurantsResults}</h5>
-                                </Col>
-                            </Row>
+                {/*            <Row gutter='30' align='middle' justify='center'>*/}
+                {/*                <Col span={9} style={{ textAlign: 'left' }}>*/}
+                {/*                    <Progress value={this.state.restaurantsResults}>{this.state.restaurantsResults}</Progress>*/}
+                {/*                </Col >*/}
+                {/*                <Col span={6} style={{ textAlign: 'center' }}>*/}
+                {/*                    Shot Accuracy*/}
+                {/*                </Col >*/}
+                {/*                <Col span={9} style={{ textAlign: 'right' }}>*/}
+                {/*                    /!* TASK 18: add a progress bar to display the shot accuracy for the away team -  look at the progress bar in column 1 of this row for reference*!/*/}
+                {/*                    <Progress value={this.state.restaurantsResults}>{this.state.restaurantsResults}</Progress>*/}
+                {/*                </Col>*/}
+                {/*            </Row>*/}
+                {/*            <Row gutter='30' align='middle' justify='center'>*/}
+                {/*                <Col span={9} style={{ textAlign: 'left' }}>*/}
+                {/*                    <h5>{this.state.restaurantsResults}</h5>*/}
+                {/*                </Col >*/}
+                {/*                <Col span={6} style={{ textAlign: 'center' }}>*/}
+                {/*                    Corners*/}
+                {/*                </Col >*/}
+                {/*                <Col span={9} style={{ textAlign: 'right' }}>*/}
+                {/*                    <h5>{this.state.restaurantsResults}</h5>*/}
+                {/*                </Col>*/}
+                {/*            </Row>*/}
+                {/*            /!* TASK 16: add a row for fouls cards - check out the above lines for how we did it for corners *!/*/}
+                {/*            <Row gutter='30' align='middle' justify='center'>*/}
+                {/*                <Col span={9} style={{ textAlign: 'left' }}>*/}
+                {/*                    <h5>{this.state.restaurantsResults}</h5>*/}
+                {/*                </Col >*/}
+                {/*                <Col span={6} style={{ textAlign: 'center' }}>*/}
+                {/*                    Fouls*/}
+                {/*                </Col >*/}
+                {/*                <Col span={9} style={{ textAlign: 'right' }}>*/}
+                {/*                    <h5>{this.state.restaurantsResults}</h5>*/}
+                {/*                </Col>*/}
+                {/*            </Row>*/}
 
-                        </CardBody>
-                    </Card>
 
-                </div> : null}
-                <Divider />
+
+                {/*            <Row gutter='30' align='middle' justify='center'>*/}
+                {/*                <Col span={9} style={{ textAlign: 'left' }}>*/}
+                {/*                    <h5>{this.state.restaurantsResults}</h5>*/}
+                {/*                </Col >*/}
+                {/*                <Col span={6} style={{ textAlign: 'center' }}>*/}
+                {/*                    Red Cards*/}
+                {/*                </Col >*/}
+                {/*                <Col span={9} style={{ textAlign: 'right' }}>*/}
+                {/*                    <h5>{this.state.restaurantsResults}</h5>*/}
+                {/*                </Col>*/}
+                {/*            </Row>*/}
+                {/*            /!* TASK 17: add a row for yellow cards - check out the above lines for how we did it for red cards *!/*/}
+                {/*            <Row gutter='30' align='middle' justify='center'>*/}
+                {/*                <Col span={9} style={{ textAlign: 'left' }}>*/}
+                {/*                    <h5>{this.state.restaurantsResults}</h5>*/}
+                {/*                </Col >*/}
+                {/*                <Col span={6} style={{ textAlign: 'center' }}>*/}
+                {/*                    Yellow Cards*/}
+                {/*                </Col >*/}
+                {/*                <Col span={9} style={{ textAlign: 'right' }}>*/}
+                {/*                    <h5>{this.state.restaurantsResults}</h5>*/}
+                {/*                </Col>*/}
+                {/*            </Row>*/}
+
+                {/*        </CardBody>*/}
+                {/*    </Card>*/}
+
+                {/*</div> : null}*/}
+                {/*<Divider />*/}
 
             </div>
         )
