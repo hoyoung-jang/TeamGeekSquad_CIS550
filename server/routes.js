@@ -142,18 +142,18 @@ Top 20 lists (location, cuisine) order by rating
 async function getRestaurantsByStateCity(req, res) {
     const pagesize = req.query.pagesize ? req.query.pagesize : 10
     const basicQuery = req.query.mealType ?
-        `SELECT R.business_id, R.name, R.stars, L.city, L.address, L.postal_code AS postalCode, L.lat, L.lon FROM Restaurant R, Attribute A, Location L, Meals M WHERE R.business_id = A.business_id AND R.business_id = L.business_id AND R.business_id = M.business_id`
-        : `SELECT R.name, R.stars, L.address, L.postal_code, L.lat, L.lon FROM Restaurant R, Attribute A, Location L WHERE R.business_id = A.business_id AND R.business_id = L.business_id`
+        `SELECT R.business_id, R.name, R.stars, L.state, L.city, L.address, L.postal_code AS postalCode, L.lat, L.lon, A.attributes FROM Restaurant R, Attribute A, Location L, Meals M WHERE R.business_id = A.business_id AND R.business_id = L.business_id AND R.business_id = M.business_id`
+        : `SELECT R.business_id, R.name, R.stars, L.state, L.city, L.address, L.postal_code AS postalCode, L.lat, L.lon, A.attributes FROM Restaurant R, Attribute A, Location L WHERE R.business_id = A.business_id AND R.business_id = L.business_id`
 
     const stateQuery = req.query.state ? ` AND L.state LIKE '%${req.query.state}%'`: ``
     const cityQuery = req.query.city ? ` AND L.city LIKE '%${req.query.city}%'`: ``
     const starsHigh = req.query.starsHigh ? req.query.starsHigh : 5
     const starsLow = req.query.starsLow ? req.query.starsLow : 0
     const starsQuery = ` AND R.stars >= ${starsLow} AND R.stars <= ${starsHigh}`
-    const bikeParkingQuery = req.query.bikeParking ? ` AND A.attributes LIKE '%"BikeParking": "True"%'` : ``
-    const creditCardsQuery = req.query.creditCards ? ` AND A.attributes LIKE '%"BusinessAcceptsCreditCards": "True"%'` : ``
-    const deliveryQuery = req.query.delivery ? ` AND A.attributes LIKE '%"RestaurantsDelivery": "True"%'` : ``
-    const takeOutQuery = req.query.takeOut ? ` AND A.attributes LIKE '%"RestaurantsTakeOut": "True"%'` : ``
+    const bikeParkingQuery = (req.query.bikeParking > 0) ? ` AND A.attributes LIKE '%"BikeParking": "True"%'` : ``
+    const creditCardsQuery = (req.query.creditCards > 0) ? ` AND A.attributes LIKE '%"BusinessAcceptsCreditCards": "True"%'` : ``
+    const deliveryQuery = (req.query.delivery > 0) ? ` AND A.attributes LIKE '%"RestaurantsDelivery": "True"%'` : ``
+    const takeOutQuery = (req.query.takeOut > 0) ? ` AND A.attributes LIKE '%"RestaurantsTakeOut": "True"%'` : ``
     const mealTypeQuery = req.query.mealType ? ` AND M.meal_type LIKE '%${req.query.mealType}%'` : ``
 
     const pageQuery = req.query.page? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
@@ -301,7 +301,7 @@ Top 20 lists (location, cuisine) order by rating
 async function getReviews(req, res) {
     const pagesize = req.query.pagesize ? req.query.pagesize : 10
     const businessId = req.query.businessId ? req.query.businessId : 'bZiIIUcpgxh8mpKMDhdqbA'
-    const basicQuery = `SELECT business_id, text AS review FROM Review WHERE business_id = '${businessId}'`
+    const basicQuery = `SELECT business_id as businessId, text AS review FROM Review WHERE business_id = '${businessId}'`
     const pageQuery = req.query.page? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
     const query = `${basicQuery} ${pageQuery};`
 

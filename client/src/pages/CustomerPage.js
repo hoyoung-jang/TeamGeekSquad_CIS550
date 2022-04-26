@@ -34,10 +34,10 @@ class CustomerPage extends React.Component {
         this.state = {
             state: "PA",
             city: "",
-            bikeParking: null,
-            creditCards: null,
-            delivery: null,
-            takeOut: null,
+            bikeParking: 0,
+            creditCards: 0,
+            delivery: 0,
+            takeOut: 0,
             mealType: "Italian",
             page: 1,
             pagesize: 1000000,
@@ -72,7 +72,7 @@ class CustomerPage extends React.Component {
         if (event.target.checked = true) {
             this.setState({bikeParking: 1})
         } else {
-            this.setState({bikeParking: null})
+            this.setState({bikeParking: 0})
         }
     }
 
@@ -80,7 +80,7 @@ class CustomerPage extends React.Component {
         if (event.target.checked = true) {
             this.setState({creditCards: 1})
         } else {
-            this.setState({creditCards: null})
+            this.setState({creditCards: 0})
         }
     }
 
@@ -88,7 +88,7 @@ class CustomerPage extends React.Component {
         if (event.target.checked = true) {
             this.setState({delivery: 1})
         } else {
-            this.setState({delivery: null})
+            this.setState({delivery: 0})
         }
     }
 
@@ -96,7 +96,7 @@ class CustomerPage extends React.Component {
         if (event.target.checked = true) {
             this.setState({takeOut: 1})
         } else {
-            this.setState({takeOut: null})
+            this.setState({takeOut: 0})
         }
     }
 
@@ -121,8 +121,8 @@ class CustomerPage extends React.Component {
         })
     }
 
-    goToReviews(businessId) {
-        getReviews(businessId, null, null).then(res => {
+    goToReviews(value) {
+        getReviews(value, null, null).then(res => {
             this.setState({reviews:res.results})
             }
         )
@@ -256,7 +256,7 @@ class CustomerPage extends React.Component {
                 <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <Table onRow={(record, rowIndex) => {
                         return {
-                            onClick: event => {this.goToReviews(record.business_id)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
+                            onClick: event => {this.goToReviews(record.businessId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
                         };
                     }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
                         <ColumnGroup title="Teams">
@@ -277,13 +277,8 @@ class CustomerPage extends React.Component {
                 <Divider />
                 {this.state.reviews ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <Table onRow={(record, rowIndex) => {
-                        return {
-                            onClick: event => {this.goToReviews(record.business_id)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
-                        };
-                    }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
-                        <ColumnGroup title="Reviews">
-                            <Column dataIndex="review" key="review"/>
-                        </ColumnGroup>
+                    }} dataSource={this.state.reviews} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
+                        <Column title="Reviews" dataIndex="review" key="review"/>
                     </Table>
                 </div> : null}
                 <Divider />
