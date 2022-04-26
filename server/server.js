@@ -11,6 +11,8 @@ const app = express();
 // whitelist localhost 3000
 app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 
+// Route A - register as GET
+app.get('/getAllRestaurants', routes.getAllRestaurants)
 
 // Route A - register as GET
 app.get('/restaurant_by_postal_code', routes.restaurant_by_postal_code)
