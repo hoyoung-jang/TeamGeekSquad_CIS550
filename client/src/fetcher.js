@@ -1,6 +1,15 @@
 import config from './config.json'
 
 
+const getAllRestaurants = async (page, pagesize) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getAllRestaurants?page=${page}&pagesize=${pagesize}`, {
+        method: 'GET',
+    })
+    return res.json()
+}
+
+
+
 const getRestaurantByPostalCode = async (postal_code, page, pagesize) => {
     var res = await fetch(`http://${config.server_host}:${config.server_port}/restaurant_by_postal_code?postal_code=${postal_code}&page=${page}&pagesize=${pagesize}`, {
         method: 'GET',
@@ -55,6 +64,7 @@ const getReview = async (businessId, page, pagesize) => {
 
 
 export {
+    getAllRestaurants,
     getRestaurantByPostalCode,
     getZipsForGoodMealsByType,
     getRestaurantsByStateCity,
