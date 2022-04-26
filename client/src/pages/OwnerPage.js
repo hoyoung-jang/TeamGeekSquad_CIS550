@@ -70,7 +70,7 @@ const playerColumns = [
 ];
 
 
-class PlayersPage extends React.Component {
+class OwnerPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -122,14 +122,14 @@ class PlayersPage extends React.Component {
         this.setState({ potHighQuery: value[1] })
     }
 
-
-
-     updateSearchResults() {
-        
-
-
+    updateSearchResults() {
+        getFilterNeighborhoods(this.state.stateQuery, this.state.postal_code, this.state.meal_type, this.state.page, this.state.pagesize).then(res =>{
+            this.setState({ playersResults: res.results})
+        })                             
      }
 /*
+
+
         //TASK 23: call getPlayerSearch and update playerResults in state. See componentDidMount() for a hint
         getPlayerSearch(this.state.nameQuery, this.state.nationalityQuery, this.state.clubQuery, this.state.ratingHighQuery, this.state.ratingLowQuery, this.state.potHighQuery, this.state.potLowQuery, null, null).then(res => {
             this.setState({ playersResults: res.results })
@@ -344,5 +344,5 @@ class PlayersPage extends React.Component {
     }
 }
 
-export default PlayersPage
+export default OwnerPage
 

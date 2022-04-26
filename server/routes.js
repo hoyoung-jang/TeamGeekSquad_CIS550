@@ -145,7 +145,7 @@ by near-by postal code
  */
 async function filter_neighborhoods(req, res) {
 
-    const state = req.query.state ? req.query.state : 'CA'
+    const stateQuery = req.query.state ? `AND L.state LIKE '%${req.query.state}%'`: ``
     const postal_code = req.query.postal_code ? req.query.postal_code : '93'
     const meal_type = req.query.meal_type ? req.query.meal_type : 'Italian'
     const page = req.query.page
@@ -158,9 +158,9 @@ async function filter_neighborhoods(req, res) {
         where 1=1
         and a.business_id = b.business_id
         and a.business_id = c.business_id
-        and b.state = state
+        and b.state = '${stateQuery}'
         and b.postal_code like '${postal_code}%'
-        and c.meal_type like '%${mealtype}%'
+        and c.meal_type like '%${meal_type}%'
         group by b.postal_code
         LIMIT ${pagesize*(page-1)}, ${pagesize}`, function (error, results, fields) {
 
