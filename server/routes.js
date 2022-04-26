@@ -216,7 +216,7 @@ async function calc_revisit_rate_by_business_id (req, res) {
         // This is the case where page is defined.
         //replaced ‘%chinese%’ with the ability for the user to enter meal type
         connection.query(
-            `SELCT a.business_id, sum(a.visit_count) as total_count,
+            `SELECT a.business_id, sum(a.visit_count) as total_count,
                     sum(a.visit_count)-count(a.business_id) as revisit_count,
                     (sum(a.visit_count)-count(a.business_id))/sum(a.visit_count) as revisiting_rate
                 FROM
