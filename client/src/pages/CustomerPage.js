@@ -37,11 +37,11 @@ class CustomerPage extends React.Component {
             delivery: null,
             takeOut: null,
             mealType: "Italian",
-            restaurantsResults: [],
             page: 1,
             pagesize: 10,
             starsLow: 0,
-            starsHigh: 5
+            starsHigh: 5,
+            restaurantsResults: []
         }
 
         this.stateChange = this.stateChange.bind(this)
@@ -113,7 +113,8 @@ class CustomerPage extends React.Component {
     updateGetRestaurantsByStateCity() {
         getRestaurantsByStateCity(this.state.state, this.state.city, this.state.starsHigh, this.state.starsLow,
             this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
-            this.setState({ restaurantsResults: res.results })
+
+            // this.setState({ restaurantsResults: res.results })
         })
     }
 
@@ -123,10 +124,13 @@ class CustomerPage extends React.Component {
 
 
     componentDidMount() {
-        // getRestaurantsByStateCity(this.state.state, this.state.city, this.state.starsHigh, this.state.starsLow,
-        //     this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
-        //     this.setState({ restaurantsResults: res.results })
-        // })
+        getRestaurantsByStateCity(this.state.state, this.state.city, this.state.starsHigh, this.state.starsLow,
+            this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize).then(res => {
+
+                // this.setState({ restaurantsResults.name : res.results.name, restaurantsResults.stars:res.results.stars, restaurantsResults.address: res.results.address, "postalCode": res.results.postalCode, "lat": res.results.lat, "lon": res.results.lon}] })
+
+            }
+        )
     }
 
     render() {
