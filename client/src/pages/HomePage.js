@@ -79,7 +79,7 @@ class HomePage extends React.Component {
     window.location = `/matches?id=${matchId}`
   }
 
-  leagueOnChange(value) {
+/*   leagueOnChange(value) {
     // TASK 2: this value should be used as a parameter to call getAllMatches in fetcher.js with the parameters page and pageSize set to null
     // then, matchesResults in state should be set to the results returned - see a similar function call in componentDidMount()
     getAllMatches(null, null, value).then(res => {
@@ -95,10 +95,10 @@ class HomePage extends React.Component {
     getAllPlayers(null, null).then(res => {
       // TASK 1: set the correct state attribute to res.results
       this.setState({ playersResults: res.results })
-    })
+    }) 
 
  
-  }
+  }*/
 
 
   render() {
