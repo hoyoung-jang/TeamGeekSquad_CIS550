@@ -248,7 +248,7 @@ async function filter_neighborhoods(req, res) {
 
 //QUERY E
 async function getRevisitRate (req, res) {
-    const businessId = req.query.businessId ? req.query.businessId : 'oZzN706lKoL4faaTK739xA'
+    const businessId = req.query.businessId ? req.query.businessId : 'aneMSizALcN1XZo9lv1SYg'
 
     connection.query(
         `SELECT a.business_id AS businessId, sum(a.visit_count) as totalCount,
