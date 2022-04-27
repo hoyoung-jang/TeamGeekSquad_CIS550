@@ -16,8 +16,8 @@ import { getAllRestaurants, getCovidBanner } from '../fetcher'
 const restaurantColumns = [
  /*  {
     title: 'business ID',
-    dataIndex: 'business_id',
-    key: 'business_id',
+    dataIndex: 'businessId',
+    key: 'businessId',
     sorter: (a, b) => a.business_id.localeCompare(b.business_id)
   }, */
   {
@@ -37,7 +37,8 @@ const restaurantColumns = [
   {
     title: 'Number of Reviews',
     dataIndex: 'review_count',
-    key: 'review_count'
+    key: 'review_count',
+    sorter: (a, b) => a.review_count - b.review_count
   },
 
   // TASK 8: add a column for Club, with the ability to (alphabetically) sort 
@@ -74,7 +75,6 @@ class HomePage extends React.Component {
 
   updateCovidBanner(record) {
     getCovidBanner(record.business_id).then(res => {
-      console.log(record.business_id)
       // TASK 1: set the correct state attribute to res.results
       this.setState({ covidBanner: res.results })
     })

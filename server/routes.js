@@ -23,7 +23,7 @@ connection.connect();
 async function getAllRestaurants (req, res) {
     // use this league encoding in your query to furnish the correct results
     const pagesize = req.query.pagesize? req.query.pagesize : 10;
-    const pageQuery = req.query.page? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
+    const pageQuery = (req.query.page && !isNaN(req.query.page))? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
     const basicQuery = `SELECT business_id,name,stars,review_count,hours FROM Restaurant a`
     const query = `${basicQuery} ${pageQuery};`
 
@@ -35,31 +35,6 @@ async function getAllRestaurants (req, res) {
             res.json({results: results})
         }
     });
-
-    // if (req.query.page && !isNaN(req.query.page)) {
-    //     // This is the case where page is defined.
-    //     //replaced ‘%chinese%’ with the rability for the user to enter meal type
-    //     connection.query(
-    //         `SELECT business_id,name,stars,review_count,hours FROM Restaurant a
-    //         LIMIT ${pagesize}*(${req.query.page}-1), ${pagesize}`, function (error, results, fields) {
-    //             if (error) {
-    //                 console.log(error)
-    //                 res.json({ error: error })
-    //             } else if (results) {
-    //                 res.json({ results: results })
-    //             }
-    //         });
-    // } else {
-    //     connection.query(`SELECT business_id,name,stars,review_count,hours FROM Restaurant`
-    //     , function (error, results, fields) {
-    //         if (error) {
-    //             console.log(error)
-    //             res.json({ error: error })
-    //         } else if (results) {
-    //             res.json({ results: results })
-    //         }
-    //     });
-    // }
 }
 
 //QUERY A
@@ -196,7 +171,7 @@ async function getRestaurantsByStateCity(req, res) {
     const takeOutQuery = (req.query.takeOut > 0) ? ` AND A.attributes LIKE '%"RestaurantsTakeOut": "True"%'` : ``
     const mealTypeQuery = req.query.mealType ? ` AND M.meal_type LIKE '%${req.query.mealType}%'` : ``
 
-    const pageQuery = req.query.page? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
+    const pageQuery = (req.query.page && !isNaN(req.query.page))? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
 
     const query = `${basicQuery}${stateQuery}${cityQuery}${starsQuery}${bikeParkingQuery}${creditCardsQuery}${deliveryQuery}${takeOutQuery}${mealTypeQuery} ORDER BY stars DESC ${pageQuery};`
 
