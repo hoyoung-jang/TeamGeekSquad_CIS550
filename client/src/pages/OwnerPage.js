@@ -372,7 +372,7 @@ class OwnerPage extends React.Component {
                                 startingAngle={0}
                                 domains={[
                                     { name: 'Stars', domain: [0, 5], getValue: d => d.stars },
-                                    { name: 'Revisit Rate', domain: [0, 0.2], getValue: d => d.revisitRate },
+                                    { name: 'Revisit Rate', domain: [0, 0.05], getValue: d => d.revisitRate },
                                     { name: 'Review Count', domain: [0, 50], getValue: d => d.reviewCount },
                                     { name: 'Neighborhood Monopoly', domain: [0, 0.2], getValue: d => 1/d.countCompetitors }
                                 ]}

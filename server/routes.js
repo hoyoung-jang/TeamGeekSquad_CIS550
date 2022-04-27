@@ -20,6 +20,9 @@ connection.connect();
 
 /////////////////////////////////////////////////////////////////
 
+/*
+    Get all restaurants records
+ */
 async function getAllRestaurants (req, res) {
     // use this league encoding in your query to furnish the correct results
     const pagesize = req.query.pagesize? req.query.pagesize : 10;
@@ -37,7 +40,9 @@ async function getAllRestaurants (req, res) {
     });
 }
 
-//QUERY A
+/*
+    Get restaurants by using postal code as a parameter
+ */
 async function getRestaurantsByPostalCode (req, res) {
     const postal_code = req.query.postal_code ? req.query.postal_code : 33707
     // use this league encoding in your query to furnish the correct results
@@ -141,11 +146,9 @@ async function zips_for_good_meals_by_type(req, res) {
 
 //QUERY C
 /*
-Query a single restaurant and add/remove attributes to customize what
-information is displayed on the screen. For example you want to see
-restaurants that have Bike Parking,  free Wifi. This is accomplished by
-joining the main Yelp data set against a list of sub-attributes. Recommend
-Top 20 lists (location, cuisine) order by rating
+    Get restaurants by using state and city parameters.
+    Also, some attributes can be used as filters including bike parking, accepting credit card, delivery, takeout.
+    And type of restaurant can also be used.
 */
 async function getRestaurantsByStateCity(req, res) {
     const pagesize = req.query.pagesize ? req.query.pagesize : 10
@@ -246,7 +249,9 @@ async function filter_neighborhoods(req, res) {
 
 
 
-//QUERY E
+/*
+    Calculate revisiting rate using query by business ID.
+ */
 async function getRevisitRate (req, res) {
     const businessId = req.query.businessId ? req.query.businessId : 'aneMSizALcN1XZo9lv1SYg'
 
