@@ -21,49 +21,29 @@ import MenuBar from '../components/MenuBar';
 import { getFilterNeighborhoods, getCalcRevisitRateByBusinessId} from '../fetcher'
 const wideFormat = format('.3r');
 
-const playerColumns = [
+const businessColumns = [
     {
-        title: 'Name',
-        dataIndex: 'Name',
-        key: 'Name',
+        title: 'Business',
+        dataIndex: 'Business',
+        key: 'Business',
         sorter: (a, b) => a.Name.localeCompare(b.Name),
         render: (text, row) => <a href={`/players?id=${row.PlayerId}`}>{text}</a>
     },
     {
-        title: 'Nationality',
-        dataIndex: 'Nationality',
-        key: 'Nationality',
+        title: 'Total Count',
+        dataIndex: 'Total Count',
+        key: 'Total Count',
         sorter: (a, b) => a.Nationality.localeCompare(b.Nationality)
     },
     {
-        title: 'Rating',
-        dataIndex: 'Rating',
-        key: 'Rating',
+        title: 'Revisit Count',
+        dataIndex: 'Revisit Count',
+        key: 'Revisit Count',
         sorter: (a, b) => a.Rating - b.Rating
 
-    },
+    }
     // TASK 19: copy over your answers for tasks 7 - 9 to add columns for potential, club, and value
 
-    {
-        title: 'Poetential',
-        dataIndex: 'Potential',
-        key: 'Potential',
-        sorter: (a, b) => a.Potential - b.Potential
-        
-    },
-
-    {
-        title: 'Club',
-        dataIndex: 'Club',
-        key: 'Club',
-        sorter: (a, b) => a.Club.localeCompare(b.Club)
-    },
-
-    {
-        title: 'Value',
-        dataIndex: 'Value',
-        key: 'Value',
-    }
 
 
 
@@ -74,6 +54,7 @@ class OwnerPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+
             nameQuery: '',
             nationalityQuery: '',
             clubQuery: '',
@@ -83,37 +64,19 @@ class OwnerPage extends React.Component {
             potLowQuery: 0,
             selectedPlayerId: window.location.search ? window.location.search.substring(1).split('=')[1] : 229594,
             selectedPlayerDetails: null,
-            playersResults: []
+            businessResults: []
 
         }
 
         this.updateSearchResults = this.updateSearchResults.bind(this)
         this.handleNameQueryChange = this.handleNameQueryChange.bind(this)
-        this.handleNationalityQueryChange = this.handleNationalityQueryChange.bind(this)
-        this.handleClubQueryChange = this.handleClubQueryChange.bind(this)
-        this.handleRatingChange = this.handleRatingChange.bind(this)
         this.handlePotentialChange = this.handlePotentialChange.bind(this)
     }
 
     
-
+    
     handleNameQueryChange(event) {
         this.setState({ nameQuery: event.target.value })
-    }
-
-    handleClubQueryChange(event) {
-        // TASK 20: update state variables appropriately. See handleNameQueryChange(event) for reference
-        this.setState({ clubQuery: event.target.value })
-    }
-
-    handleNationalityQueryChange(event) {
-        // TASK 21: update state variables appropriately. See handleNameQueryChange(event) for reference
-        this.setState({ nationalityQuery: event.target.value })
-    }
-
-    handleRatingChange(value) {
-        this.setState({ ratingLowQuery: value[0] })
-        this.setState({ ratingHighQuery: value[1] })
     }
 
     handlePotentialChange(value) {
@@ -124,7 +87,7 @@ class OwnerPage extends React.Component {
 
     updateSearchResults() {
         getFilterNeighborhoods(this.state.stateQuery, this.state.postal_code, this.state.meal_type, this.state.page, this.state.pagesize).then(res =>{
-            this.setState({ playersResults: res.results})
+            this.setState({ businessResults: res.results})
         })                             
      }
 /*
@@ -200,8 +163,8 @@ class OwnerPage extends React.Component {
                 {/* TASK 24: Copy in the players table from the Home page, but use the following style tag: style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }} - this should be one line of code! */}
 
                 <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
-                    <h3>Players</h3>
-                    <Table dataSource={this.state.playersResults} columns={playerColumns} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}/>
+                    <h3>Restaurants</h3>
+                    <Table dataSource={this.state.businessResults} columns={businessColumns} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}/>
                 </div>
 
 
