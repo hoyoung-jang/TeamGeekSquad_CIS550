@@ -4,7 +4,7 @@ import { Form, FormInput, FormGroup, Button, Card, CardBody, CardTitle, Progress
 
 import {
     Table,
-    // Pagination,
+    Pagination,
     Row,
     Col,
     Divider,
@@ -13,7 +13,7 @@ import {
     Checkbox
 } from 'antd'
 
-import { getRestaurantByPostalCode,
+import { getRestaurantsByPostalCode,
     getZipsForGoodMealsByType,
     getRestaurantsByStateCity,
     getFilterNeighborhoods,
@@ -125,7 +125,7 @@ class CustomerPage extends React.Component {
 
     goToReviews(businessId) {
         // window.location = `/customer?id=${businessId}`
-        getReviews(this.state.selectedRestaurantId).then(res => {
+        getReviews(businessId).then(res => {
             this.setState({ selectedRestaurantReviews: res.results })
         })
     }

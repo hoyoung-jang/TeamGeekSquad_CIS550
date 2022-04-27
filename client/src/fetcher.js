@@ -10,8 +10,8 @@ const getAllRestaurants = async (page, pagesize) => {
 
 
 
-const getRestaurantByPostalCode = async (postal_code, page, pagesize) => {
-    var res = await fetch(`http://${config.server_host}:${config.server_port}/restaurant_by_postal_code?postal_code=${postal_code}&page=${page}&pagesize=${pagesize}`, {
+const getRestaurantsByPostalCode = async (postal_code, page, pagesize) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getRestaurantsByPostalCode?postal_code=${postal_code}&page=${page}&pagesize=${pagesize}`, {
         method: 'GET',
     })
     return res.json()
@@ -65,7 +65,7 @@ const getReviews = async (businessId, page, pagesize) => {
 
 export {
     getAllRestaurants,
-    getRestaurantByPostalCode,
+    getRestaurantsByPostalCode,
     getZipsForGoodMealsByType,
     getRestaurantsByStateCity,
     getFilterNeighborhoods,

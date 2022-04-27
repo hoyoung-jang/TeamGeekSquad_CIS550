@@ -50,7 +50,7 @@ async function getAllRestaurants (req, res) {
 }
 
 //QUERY A
-async function restaurant_by_postal_code (req, res) {
+async function getRestaurantByPostalCode (req, res) {
     const postal_code = req.params.postal_code ? req.params.postal_code : 33707
     // use this league encoding in your query to furnish the correct results
     if (req.query.page && !isNaN(req.query.page)) {
@@ -316,7 +316,7 @@ async function getReviews(req, res) {
 
 module.exports = {
     getAllRestaurants,
-    restaurant_by_postal_code,
+    getRestaurantsByPostalCode,
     zips_for_good_meals_by_type,
     getRestaurantsByStateCity,
     filter_neighborhoods,
