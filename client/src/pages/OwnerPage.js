@@ -169,7 +169,7 @@ class OwnerPage extends React.Component {
 
         getRevisitRate(record.business_id).then(res =>{
             console.log(res.results)
-            this.setState({comparisonRestaurantRevisitRate: res.results[0].revisiting_rate})
+            this.setState({comparisonRestaurantRevisitRate: res.results[0].revisitRate})
         })
 
         this.setState({ comparisonRestaurantCompetitorsCount: this.state.selectedRestaurantCompetitorsCount })
@@ -344,10 +344,10 @@ class OwnerPage extends React.Component {
                         <Col flex={10} style={{ textAlign: 'left'}} >
                             <RadarChart
                                 data={[{"stars": this.state.selectedRestaurantStars,
-                                    // "revisitRate": this.state.selectedRestaurantRevisitRate,
+                                    "revisitRate": this.state.selectedRestaurantRevisitRate,
                                     "reviewCount": this.state.selectedRestaurantReviewCount,
                                     "countCompetitors": this.state.selectedRestaurantCompetitorsCount, color: '#0067a3'}, {"stars": this.state.comparisonRestaurantStars,
-                                    // "revisitRate": this.state.comparisonRestaurantRevisitRate,
+                                    "revisitRate": this.state.comparisonRestaurantRevisitRate,
                                     "reviewCount": this.state.comparisonRestaurantReviewCount,
                                     "countCompetitors": this.state.comparisonRestaurantCompetitorsCount, color: '#ff0000'}]}
                                 style={{
@@ -372,9 +372,9 @@ class OwnerPage extends React.Component {
                                 startingAngle={0}
                                 domains={[
                                     { name: 'Stars', domain: [0, 5], getValue: d => d.stars },
-                                    // { name: 'Revisit Rate', domain: [0, 1], getValue: d => d.revisitRate },
+                                    { name: 'Revisit Rate', domain: [0, 0.2], getValue: d => d.revisitRate },
                                     { name: 'Review Count', domain: [0, 50], getValue: d => d.reviewCount },
-                                    { name: 'Neighborhood Monopoly', domain: [0, 1], getValue: d => 1/d.countCompetitors }
+                                    { name: 'Neighborhood Monopoly', domain: [0, 0.2], getValue: d => 1/d.countCompetitors }
                                 ]}
                                 width={300}
                                 height={300}
