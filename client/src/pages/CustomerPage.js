@@ -13,12 +13,8 @@ import {
     Checkbox
 } from 'antd'
 
-import { getRestaurantsByPostalCode,
-    getZipsForGoodMealsByType,
+import {
     getRestaurantsByStateCity,
-    getFilterNeighborhoods,
-    getRevisitRate,
-    getTopTenRestaurantsByCityCOVID,
     getReviews
 } from '../fetcher'
 
@@ -47,7 +43,7 @@ class CustomerPage extends React.Component {
             selectedRestaurantId: window.location.search ? window.location.search.substring(1).split('=')[1] : 'bZiIIUcpgxh8mpKMDhdqbA',
             selectedRestaurantReviews: []
         }
-
+        // bind functions
         this.stateChange = this.stateChange.bind(this)
         this.cityChange = this.cityChange.bind(this)
         this.bikeParkingChange = this.bikeParkingChange.bind(this)
@@ -57,11 +53,13 @@ class CustomerPage extends React.Component {
         this.mealTypeChange = this.mealTypeChange.bind(this)
         this.pageChange = this.pageChange.bind(this)
         this.handleStarsChange = this.handleStarsChange.bind(this)
-
         this.updateGetRestaurantsByStateCity = this.updateGetRestaurantsByStateCity.bind(this)
         this.goToReviews = this.goToReviews.bind(this)
     }
 
+    /*
+        state changes for query parameters
+     */
     stateChange(value) {
         this.setState({state: value})
     }
@@ -110,11 +108,17 @@ class CustomerPage extends React.Component {
         this.setState({page: event.target.value})
     }
 
+    /*
+        stars parameters change using a slider
+     */
     handleStarsChange(value) {
         this.setState({starsLow: value[0]})
         this.setState({starsHigh: value[1]})
     }
 
+    /*
+        Update query results to restaurantResults variable
+     */
     updateGetRestaurantsByStateCity() {
         getRestaurantsByStateCity(this.state.state, this.state.city, this.state.starsHigh, this.state.starsLow,
             this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize)
@@ -123,6 +127,9 @@ class CustomerPage extends React.Component {
         })
     }
 
+    /*
+        Update reviews for selected restaurant
+     */
     goToReviews(businessId) {
         // window.location = `/customer?id=${businessId}`
         getReviews(businessId).then(res => {
@@ -256,8 +263,6 @@ class CustomerPage extends React.Component {
 
                 </Form>
                 <Divider />
-                {/* TASK 12: Copy over your implementation of the matches table from the home page */}
-
                 <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <Table onRow={(record, rowIndex) => {
                         return {

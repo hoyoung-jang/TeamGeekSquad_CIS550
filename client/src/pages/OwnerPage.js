@@ -21,13 +21,9 @@ import { format } from 'd3-format';
 import MenuBar from '../components/MenuBar';
 import {
     getRestaurantsByPostalCode,
-    getAllRestaurants,
-    getZipsForGoodMealsByType,
     getRestaurantsByStateCity,
-    getFilterNeighborhoods,
     getRevisitRate,
     getRegularCustomers,
-    getTopTenRestaurantsByCityCOVID,
     getReviews,
     getRestaurant
 } from '../fetcher'
@@ -42,6 +38,7 @@ class OwnerPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            // query information
             state: "PA",
             city: "",
             bikeParking: 0,
@@ -53,7 +50,9 @@ class OwnerPage extends React.Component {
             pagesize: 1000000,
             starsLow: 0,
             starsHigh: 5,
+            // query results
             restaurantsResults: [],
+            // information for selected restaurant
             selectedRestaurantId: window.location.search ? window.location.search.substring(1).split('=')[1] : 'bZiIIUcpgxh8mpKMDhdqbA',
             selectedRestaurantReviews: [],
             selectedRestaurantStars: 0,
@@ -63,6 +62,7 @@ class OwnerPage extends React.Component {
             selectedRestaurantReviewCount: 0,
             selectedRestaurantCompetitorsCount: 0,
             selectedRestaurantNearby: [],
+            // information for comparison restaurant
             comparisonRestaurantId: window.location.search ? window.location.search.substring(1).split('=')[1] : 'bZiIIUcpgxh8mpKMDhdqbA',
             comparisonRestaurantStars: 0,
             comparisonRestaurantPostalCode: 0,
@@ -71,7 +71,7 @@ class OwnerPage extends React.Component {
             comparisonRestaurantReviewCount: 0,
             comparisonRestaurantCompetitorsCount: 0
         }
-
+        // bind functions
         this.stateChange = this.stateChange.bind(this)
         this.cityChange = this.cityChange.bind(this)
         this.bikeParkingChange = this.bikeParkingChange.bind(this)
@@ -81,14 +81,15 @@ class OwnerPage extends React.Component {
         this.mealTypeChange = this.mealTypeChange.bind(this)
         this.pageChange = this.pageChange.bind(this)
         this.handleStarsChange = this.handleStarsChange.bind(this)
-
         this.updateGetRestaurantsByStateCity = this.updateGetRestaurantsByStateCity.bind(this)
         this.updateSelectedRestaurant = this.updateSelectedRestaurant.bind(this)
         this.updateComparisonRestaurant = this.updateComparisonRestaurant.bind(this)
-
         this.goToReviews = this.goToReviews.bind(this)
     }
 
+    /*
+        state changes for query parameters
+     */
     stateChange(value) {
         this.setState({state: value})
     }
@@ -137,11 +138,17 @@ class OwnerPage extends React.Component {
         this.setState({page: event.target.value})
     }
 
+    /*
+        stars parameters change using a slider
+     */
     handleStarsChange(value) {
         this.setState({starsLow: value[0]})
         this.setState({starsHigh: value[1]})
     }
 
+    /*
+        Update query results to restaurantResults variable
+     */
     updateGetRestaurantsByStateCity() {
         getRestaurantsByStateCity(this.state.state, this.state.city, this.state.starsHigh, this.state.starsLow,
             this.state.bikeParking, this.state.creditCards, this.state.delivery, this.state.takeOut, this.state.mealType, this.state.page, this.state.pagesize)
@@ -150,6 +157,9 @@ class OwnerPage extends React.Component {
             })
     }
 
+    /*
+        Update query results for selected restaurant
+     */
     updateSelectedRestaurant(record) {
         getRestaurant(record.businessId).then(res => {
             this.setState({ selectedRestaurantStars: res.results[0].stars, selectedRestaurantPostalCode: res.results[0].postal_code, selectedRestaurantReviewCount: res.results[0].review_count })
@@ -170,6 +180,9 @@ class OwnerPage extends React.Component {
         })
     }
 
+    /*
+        Update query results for comparison restaurant
+     */
     updateComparisonRestaurant(record) {
         getRestaurant(record.business_id).then(res => {
             console.log(res.results)
@@ -190,7 +203,9 @@ class OwnerPage extends React.Component {
 
     }
 
-
+    /*
+        Update query of review results for selected restaurant
+    */
     goToReviews(businessId) {
         // window.location = `/owner?id=${businessId}`
         getReviews(businessId).then(res => {
@@ -221,6 +236,7 @@ class OwnerPage extends React.Component {
                 <MenuBar />
                 <Form style={{ width: '80vw', margin: '0 auto', marginTop: '5vh' }}>
                     <Row>
+                        {/*Select menu for state parameter*/}
                         <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>State</label><br/>
                             <Select defaultValue="PA" style={{ width: 180 }} onChange={this.stateChange}>
@@ -281,22 +297,22 @@ class OwnerPage extends React.Component {
                                 <Option value="WY">Wyoming</Option>
                             </Select>
                         </FormGroup></Col>
-
+                        {/*Input form for city parameter*/}
                         <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>City</label>
                             <FormInput placeholder="City" value={this.state.city} onChange={this.cityChange} />
                         </FormGroup></Col>
-
+                        {/*Input form for mealType parameter*/}
                         <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>Meal Type</label>
                             <FormInput placeholder="Meal Type" value={this.state.mealType} onChange={this.mealTypeChange} />
                         </FormGroup></Col>
-
+                        {/*Slider form for stars parameter*/}
                         <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>Stars</label>
                             <Slider range defaultValue={[0,5]} max={5} min={0} step={0.5} onChange={this.handleStarsChange} />
                         </FormGroup></Col>
-
+                        {/*Search button for query*/}
                         <Col flex={2}><FormGroup style={{ width: '10vw' }}>
                             <Button style={{ marginTop: '4vh' }} onClick={this.updateGetRestaurantsByStateCity}>Search</Button>
                         </FormGroup></Col>
@@ -304,6 +320,7 @@ class OwnerPage extends React.Component {
                     </Row>
 
                     <Row>
+                        {/*Checkboxes for boolean parameters*/}
                         <Col flex={2}><FormGroup style={{ width: '15vw', margin: '0 auto' }}>
                             <label>Bike Parking</label><br/>
                             <Checkbox defaultChecked={false} onChange={this.bikeParkingChange} />
@@ -328,12 +345,11 @@ class OwnerPage extends React.Component {
 
                 </Form>
                 <Divider />
-                {/* TASK 12: Copy over your implementation of the matches table from the home page */}
-
+                {/*Table for query results*/}
                 <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <Table onRow={(record, rowIndex) => {
                         return {
-                            onClick: event => {this.updateSelectedRestaurant(record)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
+                            onClick: event => {this.updateSelectedRestaurant(record)}, // clicking a row takes the user to a detailed view of the selected restaurant in the table below
                         };
                     }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
                         <ColumnGroup title="Teams">
@@ -355,6 +371,7 @@ class OwnerPage extends React.Component {
                 <Card style={{marginTop: '1vh'}}>
                     <CardBody>
                         <Row>
+                        {/*Show detailed information using radar chart for selected restaurant*/}
                         <Col flex={1} style={{ textAlign: 'left', margin: '1 auto', marginTop: '4vh' }} >
                             <RadarChart
                                 data={[{"stars": this.state.selectedRestaurantStars,
@@ -397,11 +414,12 @@ class OwnerPage extends React.Component {
                                 height={250}
                             />
                         </Col >
+                        {/*Show nearby restaurants for comparison using postal code parameter*/}
                         <Col  push={0} flex={1}>
                             {this.state.selectedRestaurantNearby ? <div style={{ width: '50vw', margin: '0 auto', marginTop: '-4vh' }}>
                                 <Table onRow={(record, rowIndex) => {
                                     return {
-                                        onClick: event => {this.updateComparisonRestaurant(record)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
+                                        onClick: event => {this.updateComparisonRestaurant(record)}, // clicking a row takes the user to a comparison of two restaurants
                                     };
                                 }} dataSource={this.state.selectedRestaurantNearby} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
                                     <ColumnGroup title="Nearby Restaurants (By Postal Code)">

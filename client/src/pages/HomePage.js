@@ -13,13 +13,10 @@ import {
 import MenuBar from '../components/MenuBar';
 import { getAllRestaurants, getCovidBanner } from '../fetcher'
 
+/*
+  Columns to use for restaurants
+ */
 const restaurantColumns = [
- /*  {
-    title: 'business ID',
-    dataIndex: 'businessId',
-    key: 'businessId',
-    sorter: (a, b) => a.business_id.localeCompare(b.business_id)
-  }, */
   {
     title: 'Restaurant Name',
     dataIndex: 'name',
@@ -56,22 +53,26 @@ class HomePage extends React.Component {
 
     this.state = {
       restaurantsResults: [],
-      // pagination: null
       covidBanner: [{"COVID_Banner":"No Comment Regarding COVID"}]
     }
-  
+
+    // bind functions
     this.updateAllRestaurants = this.updateAllRestaurants.bind(this)
     this.updateCovidBanner = this.updateCovidBanner.bind(this)
   }
 
-
+  /*
+    Update all restaurants data
+   */
   updateAllRestaurants() {
     getAllRestaurants(null, null).then(res => {
       this.setState({ restaurantsResults: res.results })
     })
   }
 
-
+  /*
+    Update covid policy
+   */
   updateCovidBanner(record) {
     getCovidBanner(record.business_id).then(res => {
       if (res.results.length > 0) {
@@ -79,7 +80,6 @@ class HomePage extends React.Component {
       }
     })
   }
-
 
   componentDidMount() {
     getAllRestaurants(null, null).then(res => {
@@ -93,6 +93,8 @@ class HomePage extends React.Component {
     return (
       <div>
         <MenuBar />
+
+        {/* All restaurants table/*/}
         <div style={{ width: '70vw', margin: '0 auto', marginTop: '5vh' }}>
           <h3>Restaurants</h3>
           <Table onRow={(record, rowIndex) => {
@@ -102,6 +104,7 @@ class HomePage extends React.Component {
           }} dataSource={this.state.restaurantsResults} columns={restaurantColumns} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}/>
         </div>
 
+        {/*COVID policy table for selected restaurant*/}
         <Divider />
         {this.state.covidBanner ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
           <Table onRow={(record, rowIndex) => {
