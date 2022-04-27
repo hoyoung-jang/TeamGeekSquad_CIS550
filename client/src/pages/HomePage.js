@@ -57,7 +57,7 @@ class HomePage extends React.Component {
     this.state = {
       restaurantsResults: [],
       // pagination: null
-      covidBanner: []
+      covidBanner: [{"COVID_Banner":"No Comment Regarding COVID"}]
     }
   
     this.updateAllRestaurants = this.updateAllRestaurants.bind(this)
@@ -67,7 +67,6 @@ class HomePage extends React.Component {
 
   updateAllRestaurants() {
     getAllRestaurants(null, null).then(res => {
-      // TASK 1: set the correct state attribute to res.results
       this.setState({ restaurantsResults: res.results })
     })
   }
@@ -75,8 +74,9 @@ class HomePage extends React.Component {
 
   updateCovidBanner(record) {
     getCovidBanner(record.business_id).then(res => {
-      // TASK 1: set the correct state attribute to res.results
-      this.setState({ covidBanner: res.results })
+      if (res.results.length > 0) {
+        this.setState({ covidBanner: res.results })
+      }
     })
   }
 
