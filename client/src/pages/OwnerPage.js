@@ -346,10 +346,25 @@ class OwnerPage extends React.Component {
                                 data={[{"stars": this.state.selectedRestaurantStars,
                                     // "revisitRate": this.state.selectedRestaurantRevisitRate,
                                     "reviewCount": this.state.selectedRestaurantReviewCount,
-                                    "countCompetitors": this.state.selectedRestaurantCompetitorsCount}, {"stars": this.state.comparisonRestaurantStars,
+                                    "countCompetitors": this.state.selectedRestaurantCompetitorsCount, color: '#0067a3'}, {"stars": this.state.comparisonRestaurantStars,
                                     // "revisitRate": this.state.comparisonRestaurantRevisitRate,
                                     "reviewCount": this.state.comparisonRestaurantReviewCount,
-                                    "countCompetitors": this.state.comparisonRestaurantCompetitorsCount}]}
+                                    "countCompetitors": this.state.comparisonRestaurantCompetitorsCount, color: '#ff0000'}]}
+                                style={{
+                                    axes: {
+                                        line: {},
+                                        ticks: {},
+                                        text: {}
+                                    },
+                                    labels: {
+                                        fontSize: 15
+                                    },
+                                    polygons: {
+                                        strokeWidth: 0.5,
+                                        strokeOpacity: 1,
+                                        fillOpacity: 0.3,
+                                    }
+                                }}
                                 tickFormat={t => wideFormat(t)}
                                 startingAngle={0}
                                 domains={[
