@@ -257,7 +257,7 @@ async function getRevisitRate (req, res) {
             FROM
                 (SELECT business_id, user_id, count(user_id) as visit_count
                 FROM Review
-                WHERE business_id = '${businessId}%'
+                WHERE business_id = '${businessId}'
                 GROUP BY user_id
                 ORDER BY visit_count) a;`, function (error, results, fields) {
             if (error) {
