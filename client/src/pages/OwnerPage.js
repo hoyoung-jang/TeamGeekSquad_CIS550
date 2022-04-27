@@ -352,9 +352,12 @@ class OwnerPage extends React.Component {
                                     "countCompetitors": this.state.comparisonRestaurantCompetitorsCount, color: '#ff0000'}]}
                                 style={{
                                     axes: {
-                                        line: {},
-                                        ticks: {},
-                                        text: {}
+                                        line: {fillOpacity: 0.8,
+                                            strokeWidth: 0.5,
+                                            strokeOpacity: 0.8},
+                                        ticks: {fillOpacity: 0,
+                                            strokeOpacity: 0},
+                                        text: {fontSize: 10}
                                     },
                                     labels: {
                                         fontSize: 15
