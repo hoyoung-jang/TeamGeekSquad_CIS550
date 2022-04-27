@@ -9,20 +9,20 @@ import MenuBar from '../components/MenuBar';
 import { getAllRestaurants } from '../fetcher'
 
 const restaurantColumns = [
-  {
+ /*  {
     title: 'business_id',
     dataIndex: 'business_id',
     key: 'business_id',
     sorter: (a, b) => a.business_id.localeCompare(b.business_id)
-  },
+  }, */
   {
-    title: 'name',
+    title: 'Restaurant Name',
     dataIndex: 'name',
     key: 'name',
     sorter: (a, b) => a.name.localeCompare(b.name)
   },
   {
-    title: 'stars',
+    title: 'Stars',
     dataIndex: 'stars',
     key: 'stars',
     sorter: (a, b) => a.stars - b.stars
@@ -30,14 +30,14 @@ const restaurantColumns = [
   },
   // TASK 7: add a column for Potential, with the ability to (numerically) sort ,
   {
-    title: 'review_count',
+    title: 'Number of Reviews',
     dataIndex: 'review_count',
     key: 'review_count'
   },
 
   // TASK 8: add a column for Club, with the ability to (alphabetically) sort 
   {
-    title: 'hours',
+    title: 'Hours',
     dataIndex: 'hours',
     key: 'hours'
   }
