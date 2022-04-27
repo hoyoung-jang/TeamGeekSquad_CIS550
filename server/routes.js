@@ -58,8 +58,9 @@ async function getRestaurantsByPostalCode (req, res) {
         `SELECT a.*, b.*
             FROM Restaurant a, Location b
             WHERE 1=1
-                and a.business_id = b.business_id
-                and b.postal_code = ${postal_code};`, function (error, results, fields) {
+                AND a.business_id = b.business_id
+                AND b.postal_code = ${postal_code}
+                ORDER by a.stars DESC;`, function (error, results, fields) {
             if (error) {
                 console.log(error)
                 res.json({ error: error })
