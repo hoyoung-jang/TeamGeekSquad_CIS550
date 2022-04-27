@@ -50,26 +50,45 @@ async function getAllRestaurants (req, res) {
 }
 
 //QUERY A
-async function getRestaurantByPostalCode (req, res) {
-    const postal_code = req.params.postal_code ? req.params.postal_code : 33707
+async function getRestaurantsByPostalCode (req, res) {
+    const postal_code = req.query.postal_code ? req.query.postal_code : 33707
     // use this league encoding in your query to furnish the correct results
-    if (req.query.page && !isNaN(req.query.page)) {
-        // This is the case where page is defined.
-        //replaced ‘%chinese%’ with the rability for the user to enter meal type
-        connection.query(
-            `SELECT a.*
-                FROM Restaurant a, Location b
-                WHERE 1=1
-                    and a.business_id = b.business_id
-                    and b.postal_code = ${postal_code};`, function (error, results, fields) {
-                if (error) {
-                    console.log(error)
-                    res.json({ error: error })
-                } else if (results) {
-                    res.json({ results: results })
-                }
-            });
-    }
+
+    connection.query(
+        `SELECT a.*, b.*
+            FROM Restaurant a, Location b
+            WHERE 1=1
+                and a.business_id = b.business_id
+                and b.postal_code = ${postal_code};`, function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        }
+    );
+}
+
+
+//QUERY A
+async function getRestaurant (req, res) {
+    const businessId = req.query.businessId ? req.query.businessId : 'oZzN706lKoL4faaTK739xA'
+    connection.query(
+        `SELECT a.*, b.*
+            FROM Restaurant a, Location b
+            WHERE 1=1
+                and b.business_id = '${businessId}'
+                and a.business_id = b.business_id
+                ;`, function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        }
+    );
 }
 
 
@@ -81,7 +100,7 @@ This will render results using pagination functionality that will be created usi
 */
 
 async function zips_for_good_meals_by_type(req, res) {
-    const mealtype = req.params.mealtype ? req.params.mealtype : 'chinese'
+    const mealtype = req.query.mealtype ? req.query.mealtype : 'chinese'
     // use this league encoding in your query to furnish the correct results
     const pagesize = req.query.pagesize ? req.query.pagesize : 10
     if (req.query.page && !isNaN(req.query.page)) {
@@ -142,8 +161,15 @@ Top 20 lists (location, cuisine) order by rating
 async function getRestaurantsByStateCity(req, res) {
     const pagesize = req.query.pagesize ? req.query.pagesize : 10
     const basicQuery = req.query.mealType ?
-        `SELECT R.business_id AS businessId, R.name, R.stars, L.state, L.city, L.address, L.postal_code AS postalCode, L.lat, L.lon, A.attributes FROM Restaurant R, Attribute A, Location L, Meals M WHERE R.business_id = A.business_id AND R.business_id = L.business_id AND R.business_id = M.business_id`
-        : `SELECT R.business_id AS businessID, R.name, R.stars, L.state, L.city, L.address, L.postal_code AS postalCode, L.lat, L.lon, A.attributes FROM Restaurant R, Attribute A, Location L WHERE R.business_id = A.business_id AND R.business_id = L.business_id`
+        `SELECT R.business_id AS businessId, R.name, R.stars, R.review_count, L.state, L.city, L.address, L.postal_code AS postalCode, L.lat, L.lon, A.attributes 
+        FROM Restaurant R, Attribute A, Location L, Meals M 
+        WHERE R.business_id = A.business_id 
+        AND R.business_id = L.business_id 
+        AND R.business_id = M.business_id`
+        : `SELECT R.business_id AS businessID, R.name, R.stars, R.review_count, L.state, L.city, L.address, L.postal_code AS postalCode, L.lat, L.lon, A.attributes 
+            FROM Restaurant R, Attribute A, Location L 
+            WHERE R.business_id = A.business_id 
+            AND R.business_id = L.business_id`
 
     const stateQuery = req.query.state ? ` AND L.state LIKE '%${req.query.state}%'`: ``
     const cityQuery = req.query.city ? ` AND L.city LIKE '%${req.query.city}%'`: ``
@@ -232,30 +258,26 @@ async function filter_neighborhoods(req, res) {
 
 
 //QUERY E
-async function calc_revisit_rate_by_business_id (req, res) {
-    const business_id = req.params.business_id ? req.params.business_id : 'bZiIIUcpgxh8mpKMDhdqbA'
-    // use this league encoding in your query to furnish the correct results
-    if (req.query.page && !isNaN(req.query.page)) {
-        // This is the case where page is defined.
-        //replaced ‘%chinese%’ with the ability for the user to enter meal type
-        connection.query(
-            `SELECT a.business_id, sum(a.visit_count) as total_count,
-                    sum(a.visit_count)-count(a.business_id) as revisit_count,
-                    (sum(a.visit_count)-count(a.business_id))/sum(a.visit_count) as revisiting_rate
-                FROM
-                    (SELECT business_id, user_id, count(user_id) as visit_count
-                    FROM Review
-                    WHERE business_id = '${business_id}%'
-                    GROUP BY user_id
-                    ORDER BY visit_count) a;`, function (error, results, fields) {
-                if (error) {
-                    console.log(error)
-                    res.json({ error: error })
-                } else if (results) {
-                    res.json({ results: results })
-                }
-            });
-    }
+async function getRevisitRate (req, res) {
+    const business_id = req.query.business_id ? req.query.business_id : 'oZzN706lKoL4faaTK739xA'
+
+    connection.query(
+        `SELECT a.business_id, sum(a.visit_count) as total_count,
+                sum(a.visit_count)-count(a.business_id) as revisit_count,
+                (sum(a.visit_count)-count(a.business_id))/sum(a.visit_count) as revisiting_rate
+            FROM
+                (SELECT business_id, user_id, count(user_id) as visit_count
+                FROM Review
+                WHERE business_id = '${business_id}%'
+                GROUP BY user_id
+                ORDER BY visit_count) a;`, function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
 }
 
 //QUERY F
@@ -264,7 +286,7 @@ Display business name, star rating, and any COVID-related messaging, if applicab
  */
 
 async function top_ten_restaurants_by_city_COVID(req, res) {
-    const city = req.params.city ? req.params.city : 'Nashville'
+    const city = req.query.city ? req.query.city : 'Nashville'
     // use this league encoding in your query to furnish the correct results
     if (req.query.page && !isNaN(req.query.page)) {
         // This is the case where page is defined.
@@ -316,11 +338,12 @@ async function getReviews(req, res) {
 
 module.exports = {
     getAllRestaurants,
+    getRestaurant,
     getRestaurantsByPostalCode,
     zips_for_good_meals_by_type,
     getRestaurantsByStateCity,
     filter_neighborhoods,
-    calc_revisit_rate_by_business_id,
+    getRevisitRate,
     top_ten_restaurants_by_city_COVID,
     getReviews
 }

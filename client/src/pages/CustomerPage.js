@@ -17,7 +17,7 @@ import { getRestaurantsByPostalCode,
     getZipsForGoodMealsByType,
     getRestaurantsByStateCity,
     getFilterNeighborhoods,
-    getCalcRevisitRateByBusinessId,
+    getRevisitRate,
     getTopTenRestaurantsByCityCOVID,
     getReviews
 } from '../fetcher'

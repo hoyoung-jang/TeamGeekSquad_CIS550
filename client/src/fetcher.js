@@ -41,8 +41,8 @@ const getFilterNeighborhoods = async (state, postal_code, meal_type, page, pages
     return res.json()
 }
 
-const getCalcRevisitRateByBusinessId = async (business_id, page, pagesize) => {
-    var res = await fetch(`http://${config.server_host}:${config.server_port}/calc_revisit_rate_by_business_id?business_id=${business_id}&page=${page}&pagesize=${pagesize}`, {
+const getRevisitRate = async (business_id) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getRevisitRate?business_id=${business_id}`, {
         method: 'GET',
     })
     return res.json()
@@ -55,8 +55,15 @@ const getTopTenRestaurantsByCityCOVID = async (city, page, pagesize) => {
     return res.json()
 }
 
-const getReviews = async (businessId, page, pagesize) => {
-    var res = await fetch(`http://${config.server_host}:${config.server_port}/getReviews?businessId=${businessId}&page=${page}&pagesize=${pagesize}`, {
+const getReviews = async (businessId) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getReviews?businessId=${businessId}`, {
+        method: 'GET',
+    })
+    return res.json()
+}
+
+const getRestaurant = async (businessId) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getRestaurant?businessId=${businessId}`, {
         method: 'GET',
     })
     return res.json()
@@ -69,7 +76,8 @@ export {
     getZipsForGoodMealsByType,
     getRestaurantsByStateCity,
     getFilterNeighborhoods,
-    getCalcRevisitRateByBusinessId,
+    getRevisitRate,
     getTopTenRestaurantsByCityCOVID,
-    getReviews
+    getReviews,
+    getRestaurant
 }

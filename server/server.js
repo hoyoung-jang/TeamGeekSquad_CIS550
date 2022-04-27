@@ -15,7 +15,7 @@ app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 app.get('/getAllRestaurants', routes.getAllRestaurants)
 
 // Route A - register as GET
-app.get('/restaurant_by_postal_code', routes.restaurant_by_postal_code)
+app.get('/getRestaurantsByPostalCode', routes.getRestaurantsByPostalCode)
 
 // Route B - register as GET
 app.get('/zips_for_good_meals_by_type', routes.zips_for_good_meals_by_type)
@@ -27,13 +27,16 @@ app.get('/getRestaurantsByStateCity', routes.getRestaurantsByStateCity)
 app.get('/filter_neighborhoods', routes.filter_neighborhoods)
 
 // Route E - register as GET
-app.get('/calc_revisit_rate_by_business_id', routes.calc_revisit_rate_by_business_id)
+app.get('/getRevisitRate', routes.getRevisitRate)
 
 // Route F - register as GET
 app.get('/top_ten_restaurants_by_city_COVID', routes.top_ten_restaurants_by_city_COVID)
 
 // Route G - register as GET
 app.get('/getReviews', routes.getReviews)
+
+// Route G - register as GET
+app.get('/getRestaurant', routes.getRestaurant)
 
 
 app.listen(config.server_port, () => {

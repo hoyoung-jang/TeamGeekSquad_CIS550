@@ -20,12 +20,14 @@ import { format } from 'd3-format';
 
 import MenuBar from '../components/MenuBar';
 import { getRestaurantsByPostalCode,
+    getAllRestaurants,
     getZipsForGoodMealsByType,
     getRestaurantsByStateCity,
     getFilterNeighborhoods,
-    getCalcRevisitRateByBusinessId,
+    getRevisitRate,
     getTopTenRestaurantsByCityCOVID,
-    getReviews
+    getReviews,
+    getRestaurant
 } from '../fetcher'
 
 const wideFormat = format('.3r');
@@ -51,7 +53,20 @@ class OwnerPage extends React.Component {
             starsHigh: 5,
             restaurantsResults: [],
             selectedRestaurantId: window.location.search ? window.location.search.substring(1).split('=')[1] : 'bZiIIUcpgxh8mpKMDhdqbA',
-            selectedRestaurantReviews: []
+            selectedRestaurantReviews: [],
+            selectedRestaurantStars: 0,
+            selectedRestaurantPostalCode: 0,
+            selectedRestaurantRevisitRate: 0,
+            selectedRestaurantReviewCount: 0,
+            selectedRestaurantCompetitorCount: 0,
+            selectedRestaurantNearby: [],
+            comparisonRestaurantId: window.location.search ? window.location.search.substring(1).split('=')[1] : 'bZiIIUcpgxh8mpKMDhdqbA',
+            comparisonRestaurantStars: 0,
+            comparisonRestaurantPostalCode: 0,
+            comparisonRestaurantRevisitRate: 0,
+            comparisonRestaurantReviewCount: 0,
+            comparisonRestaurantCompetitorCount: 0
+
         }
 
         this.stateChange = this.stateChange.bind(this)
@@ -65,6 +80,8 @@ class OwnerPage extends React.Component {
         this.handleStarsChange = this.handleStarsChange.bind(this)
 
         this.updateGetRestaurantsByStateCity = this.updateGetRestaurantsByStateCity.bind(this)
+        this.updateSelectedRestaurant = this.updateSelectedRestaurant.bind(this)
+
         this.goToReviews = this.goToReviews.bind(this)
     }
 
@@ -129,11 +146,30 @@ class OwnerPage extends React.Component {
             })
     }
 
+    updateSelectedRestaurant(record) {
+        getRestaurant(record.businessId).then(res => {
+            this.setState({ selectedRestaurantStars: res.results.stars, selectedRestaurantPostalCode: res.results.postal_code, selectedRestaurantReviewCount: res.results.review_count })
+        })
+
+        getRevisitRate(record.businessId).then(res =>{
+            this.setState({selectedRestaurantRevisitRate: res.results.revisiting_rate})
+        })
+
+        getRestaurantsByPostalCode(record.postalCode).then(res => {
+            this.setState({ selectedRestaurantNearby: res.results, selectedRestaurantCompetitorCount: res.results.length })
+        })
+
+    }
+
     goToReviews(businessId) {
         // window.location = `/owner?id=${businessId}`
         getReviews(businessId).then(res => {
             this.setState({ selectedRestaurantReviews: res.results })
         })
+    }
+
+    goToDetails(businessId) {
+
     }
 
 
@@ -267,7 +303,7 @@ class OwnerPage extends React.Component {
                 <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <Table onRow={(record, rowIndex) => {
                         return {
-                            onClick: event => {this.goToReviews(record.businessId)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
+                            onClick: event => {this.updateSelectedRestaurant(record)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
                         };
                     }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
                         <ColumnGroup title="Teams">
@@ -287,10 +323,14 @@ class OwnerPage extends React.Component {
                 </div>
 
                 <Divider />
-                {this.state.selectedRestaurantReviews ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
+                {this.state.selectedRestaurantNearby ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <Table onRow={(record, rowIndex) => {
-                    }} dataSource={this.state.selectedRestaurantReviews} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
-                        <Column title="Reviews" dataIndex="review" key="review"/>
+                    }} dataSource={this.state.selectedRestaurantNearby} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
+                        <ColumnGroup title="Teams">
+                            <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}
+                                    render={(text, row) => <a href={`/customer?id=${row.businessId}`}>{text}</a>}/>
+                            <Column title="Stars" dataIndex="stars" key="stars" sorter= {(a, b) => a.stars - b.stars}/>
+                        </ColumnGroup>
                     </Table>
                 </div> : null}
                 <Divider />
