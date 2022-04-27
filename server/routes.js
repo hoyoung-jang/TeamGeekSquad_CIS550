@@ -274,6 +274,31 @@ async function getRevisitRate (req, res) {
         });
 }
 
+/*
+    Calculate regular customers using query by business ID.
+ */
+async function getRegularCustomers (req, res) {
+    const businessId = req.query.businessId ? req.query.businessId : 'aneMSizALcN1XZo9lv1SYg'
+    const number = req.query.number ? req.query.number : 3
+    connection.query(
+        `WITH customers AS (SELECT business_id, user_id, count(user_id) as visitCount
+                FROM Review
+                WHERE business_id = '${businessId}'
+                GROUP BY user_id
+                ORDER BY visitCount) 
+
+        SELECT count(*) AS regularCustomers
+        FROM customers        
+        WHERE visitCount >= ${number};`, function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+}
+
 //QUERY F
 /* Select top 10 businesses for a given city above a given rating threshold, ordered by rating and review count.
 Display business name, star rating, and any COVID-related messaging, if applicable.
@@ -359,5 +384,6 @@ module.exports = {
     getRevisitRate,
     top_ten_restaurants_by_city_COVID,
     getReviews,
-    getCovidBanner
+    getCovidBanner,
+    getRegularCustomers
 }

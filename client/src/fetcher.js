@@ -48,6 +48,13 @@ const getRevisitRate = async (businessId) => {
     return res.json()
 }
 
+const getRegularCustomers = async (businessId, number) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getRegularCustomers?businessId=${businessId}&number=${number}`, {
+        method: 'GET',
+    })
+    return res.json()
+}
+
 const getTopTenRestaurantsByCityCOVID = async (city, page, pagesize) => {
     var res = await fetch(`http://${config.server_host}:${config.server_port}/top_ten_restaurants_by_city_COVID?city=${city}&page=${page}&pagesize=${pagesize}`, {
         method: 'GET',
@@ -84,6 +91,7 @@ export {
     getRestaurantsByStateCity,
     getFilterNeighborhoods,
     getRevisitRate,
+    getRegularCustomers,
     getTopTenRestaurantsByCityCOVID,
     getReviews,
     getRestaurant,

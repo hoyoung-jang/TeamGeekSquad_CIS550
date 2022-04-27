@@ -19,12 +19,14 @@ import { format } from 'd3-format';
 
 
 import MenuBar from '../components/MenuBar';
-import { getRestaurantsByPostalCode,
+import {
+    getRestaurantsByPostalCode,
     getAllRestaurants,
     getZipsForGoodMealsByType,
     getRestaurantsByStateCity,
     getFilterNeighborhoods,
     getRevisitRate,
+    getRegularCustomers,
     getTopTenRestaurantsByCityCOVID,
     getReviews,
     getRestaurant
@@ -57,6 +59,7 @@ class OwnerPage extends React.Component {
             selectedRestaurantStars: 0,
             selectedRestaurantPostalCode: 0,
             selectedRestaurantRevisitRate: 0,
+            selectedRestaurantRegularCustomers: 0,
             selectedRestaurantReviewCount: 0,
             selectedRestaurantCompetitorsCount: 0,
             selectedRestaurantNearby: [],
@@ -64,6 +67,7 @@ class OwnerPage extends React.Component {
             comparisonRestaurantStars: 0,
             comparisonRestaurantPostalCode: 0,
             comparisonRestaurantRevisitRate: 0,
+            comparisonRestaurantRegularCustomers: 0,
             comparisonRestaurantReviewCount: 0,
             comparisonRestaurantCompetitorsCount: 0
         }
@@ -156,6 +160,11 @@ class OwnerPage extends React.Component {
             this.setState({selectedRestaurantRevisitRate: res.results[0].revisitRate})
         })
 
+        getRegularCustomers(record.businessId, 2).then(res =>{
+            console.log(res.results)
+            this.setState({selectedRestaurantRegularCustomers: res.results[0].regularCustomers})
+        })
+
         getRestaurantsByPostalCode(record.postalCode).then(res => {
             this.setState({ selectedRestaurantNearby: res.results, selectedRestaurantCompetitorsCount: res.results.length })
         })
@@ -170,6 +179,11 @@ class OwnerPage extends React.Component {
         getRevisitRate(record.business_id).then(res =>{
             console.log(res.results)
             this.setState({comparisonRestaurantRevisitRate: res.results[0].revisitRate})
+        })
+
+        getRegularCustomers(record.business_id, 2).then(res =>{
+            console.log(res.results)
+            this.setState({comparisonRestaurantRegularCustomers: res.results[0].regularCustomers})
         })
 
         this.setState({ comparisonRestaurantCompetitorsCount: this.state.selectedRestaurantCompetitorsCount })
@@ -338,17 +352,19 @@ class OwnerPage extends React.Component {
                 </div>
 
                 <Divider />
-                <Card style={{marginTop: '2vh'}}>
+                <Card style={{marginTop: '1vh'}}>
                     <CardBody>
                         <Row>
-                        <Col flex={10} style={{ textAlign: 'left'}} >
+                        <Col flex={1} style={{ textAlign: 'left', margin: '1 auto', marginTop: '4vh' }} >
                             <RadarChart
                                 data={[{"stars": this.state.selectedRestaurantStars,
                                     "revisitRate": this.state.selectedRestaurantRevisitRate,
                                     "reviewCount": this.state.selectedRestaurantReviewCount,
+                                    "regularCustomers": this.state.selectedRestaurantRegularCustomers,
                                     "countCompetitors": this.state.selectedRestaurantCompetitorsCount, color: '#0067a3'}, {"stars": this.state.comparisonRestaurantStars,
                                     "revisitRate": this.state.comparisonRestaurantRevisitRate,
                                     "reviewCount": this.state.comparisonRestaurantReviewCount,
+                                    "regularCustomers": this.state.comparisonRestaurantRegularCustomers,
                                     "countCompetitors": this.state.comparisonRestaurantCompetitorsCount, color: '#ff0000'}]}
                                 style={{
                                     axes: {
@@ -360,7 +376,7 @@ class OwnerPage extends React.Component {
                                         text: {fontSize: 10}
                                     },
                                     labels: {
-                                        fontSize: 15
+                                        fontSize: 10
                                     },
                                     polygons: {
                                         strokeWidth: 0.5,
@@ -372,12 +388,13 @@ class OwnerPage extends React.Component {
                                 startingAngle={0}
                                 domains={[
                                     { name: 'Stars', domain: [0, 5], getValue: d => d.stars },
-                                    { name: 'Revisit Rate', domain: [0, 0.05], getValue: d => d.revisitRate },
+                                    { name: 'Revisit Rate', domain: [0, 0.2], getValue: d => d.revisitRate },
+                                    { name: 'Regular Customers', domain: [0, 5], getValue: d => d.regularCustomers },
                                     { name: 'Review Count', domain: [0, 50], getValue: d => d.reviewCount },
-                                    { name: 'Neighborhood Monopoly', domain: [0, 0.2], getValue: d => 1/d.countCompetitors }
+                                    { name: 'Neighborhood Density', domain: [0, 200], getValue: d => Math.max(d.countCompetitors, 100) }
                                 ]}
-                                width={300}
-                                height={300}
+                                width={250}
+                                height={250}
                             />
                         </Col >
                         <Col  push={0} flex={1}>

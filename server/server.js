@@ -29,6 +29,9 @@ app.get('/filter_neighborhoods', routes.filter_neighborhoods)
 // Route E - register as GET
 app.get('/getRevisitRate', routes.getRevisitRate)
 
+// Route E - register as GET
+app.get('/getRegularCustomers', routes.getRegularCustomers)
+
 // Route F - register as GET
 app.get('/top_ten_restaurants_by_city_COVID', routes.top_ten_restaurants_by_city_COVID)
 
