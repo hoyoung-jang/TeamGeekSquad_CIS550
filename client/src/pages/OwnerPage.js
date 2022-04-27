@@ -80,6 +80,7 @@ class OwnerPage extends React.Component {
 
         this.updateGetRestaurantsByStateCity = this.updateGetRestaurantsByStateCity.bind(this)
         this.updateSelectedRestaurant = this.updateSelectedRestaurant.bind(this)
+        this.updateComparisonRestaurant = this.updateComparisonRestaurant.bind(this)
 
         this.goToReviews = this.goToReviews.bind(this)
     }
@@ -158,8 +159,23 @@ class OwnerPage extends React.Component {
         getRestaurantsByPostalCode(record.postalCode).then(res => {
             this.setState({ selectedRestaurantNearby: res.results, selectedRestaurantCompetitorsCount: res.results.length })
         })
+    }
+
+    updateComparisonRestaurant(record) {
+        getRestaurant(record.business_id).then(res => {
+            console.log(res.results)
+            this.setState({ comparisonRestaurantStars: res.results[0].stars, comparisonRestaurantPostalCode: res.results[0].postal_code, comparisonRestaurantReviewCount: res.results[0].review_count })
+        })
+
+        getRevisitRate(record.business_id).then(res =>{
+            // console.log(res.results)
+            this.setState({comparisonRestaurantRevisitRate: res.results[0].revisiting_rate})
+        })
+
+        this.setState({ comparisonRestaurantCompetitorsCount: this.state.selectedRestaurantCompetitorsCount })
 
     }
+
 
     goToReviews(businessId) {
         // window.location = `/owner?id=${businessId}`
@@ -307,8 +323,7 @@ class OwnerPage extends React.Component {
                         };
                     }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
                         <ColumnGroup title="Teams">
-                            <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}
-                                    render={(text, row) => <a href={`/customer?id=${row.businessId}`}>{text}</a>}/>
+                            <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}/>
                             <Column title="Stars" dataIndex="stars" key="stars" sorter= {(a, b) => a.stars - b.stars}/>
                         </ColumnGroup>
                         <ColumnGroup title="Location Info">
@@ -326,31 +341,38 @@ class OwnerPage extends React.Component {
                 <Card style={{marginTop: '2vh'}}>
                     <CardBody>
                         <Row>
-                        <Col flex={1} style={{ textAlign: 'left' }}>
+                        <Col flex={10} style={{ textAlign: 'left'}} >
                             <RadarChart
                                 data={[{"stars": this.state.selectedRestaurantStars,
                                     // "revisitRate": this.state.selectedRestaurantRevisitRate,
                                     "reviewCount": this.state.selectedRestaurantReviewCount,
-                                    "countCompetitors": this.state.selectedRestaurantCompetitorsCount}]}
+                                    "countCompetitors": this.state.selectedRestaurantCompetitorsCount}, {"stars": this.state.comparisonRestaurantStars,
+                                    // "revisitRate": this.state.comparisonRestaurantRevisitRate,
+                                    "reviewCount": this.state.comparisonRestaurantReviewCount,
+                                    "countCompetitors": this.state.comparisonRestaurantCompetitorsCount}]}
                                 tickFormat={t => wideFormat(t)}
                                 startingAngle={0}
                                 domains={[
                                     { name: 'Stars', domain: [0, 5], getValue: d => d.stars },
                                     // { name: 'Revisit Rate', domain: [0, 1], getValue: d => d.revisitRate },
-                                    { name: 'Review Count', domain: [0, 100], getValue: d => d.reviewCount },
+                                    { name: 'Review Count', domain: [0, 50], getValue: d => d.reviewCount },
                                     { name: 'Neighborhood Monopoly', domain: [0, 1], getValue: d => 1/d.countCompetitors }
                                 ]}
                                 width={300}
                                 height={300}
-                            />}
+                            />
                         </Col >
                         <Col  push={0} flex={1}>
-                            {this.state.selectedRestaurantNearby ? <div style={{ width: '50vw', margin: '0 auto', marginTop: '1vh' }}>
+                            {this.state.selectedRestaurantNearby ? <div style={{ width: '50vw', margin: '0 auto', marginTop: '-4vh' }}>
                                 <Table onRow={(record, rowIndex) => {
+                                    return {
+                                        onClick: event => {this.updateComparisonRestaurant(record)}, // clicking a row takes the user to a detailed view of the match in the /matches page using the MatchId parameter
+                                    };
                                 }} dataSource={this.state.selectedRestaurantNearby} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
                                     <ColumnGroup title="Nearby Restaurants (By Postal Code)">
                                         <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}/>
                                         <Column title="Stars" dataIndex="stars" key="stars" sorter= {(a, b) => a.stars - b.stars}/>
+                                        <Column title="Address" dataIndex="address" key="address" sorter= {(a, b) => a.address.localeCompare(b.address)}/>
                                     </ColumnGroup>
                                 </Table>
 
