@@ -147,11 +147,12 @@ class OwnerPage extends React.Component {
 
     updateSelectedRestaurant(record) {
         getRestaurant(record.businessId).then(res => {
-            this.setState({ selectedRestaurantStars: res.results.stars, selectedRestaurantPostalCode: res.results.postal_code, selectedRestaurantReviewCount: res.results.review_count })
+            this.setState({ selectedRestaurantStars: res.results[0].stars, selectedRestaurantPostalCode: res.results[0].postal_code, selectedRestaurantReviewCount: res.results[0].review_count })
         })
 
         getRevisitRate(record.businessId).then(res =>{
-            this.setState({selectedRestaurantRevisitRate: res.results.revisiting_rate})
+            // console.log(res.results)
+            this.setState({selectedRestaurantRevisitRate: res.results[0].revisiting_rate})
         })
 
         getRestaurantsByPostalCode(record.postalCode).then(res => {
@@ -328,14 +329,14 @@ class OwnerPage extends React.Component {
                         <Col flex={1} style={{ textAlign: 'left' }}>
                             <RadarChart
                                 data={[{"stars": this.state.selectedRestaurantStars,
-                                    "revisitRate": this.state.selectedRestaurantRevisitRate,
+                                    // "revisitRate": this.state.selectedRestaurantRevisitRate,
                                     "reviewCount": this.state.selectedRestaurantReviewCount,
                                     "countCompetitors": this.state.selectedRestaurantCompetitorsCount}]}
                                 tickFormat={t => wideFormat(t)}
                                 startingAngle={0}
                                 domains={[
                                     { name: 'Stars', domain: [0, 5], getValue: d => d.stars },
-                                    { name: 'Revisit Rate', domain: [0, 1], getValue: d => d.revisitRate },
+                                    // { name: 'Revisit Rate', domain: [0, 1], getValue: d => d.revisitRate },
                                     { name: 'Review Count', domain: [0, 100], getValue: d => d.reviewCount },
                                     { name: 'Neighborhood Monopoly', domain: [0, 1], getValue: d => 1/d.countCompetitors }
                                 ]}
@@ -347,7 +348,7 @@ class OwnerPage extends React.Component {
                             {this.state.selectedRestaurantNearby ? <div style={{ width: '50vw', margin: '0 auto', marginTop: '1vh' }}>
                                 <Table onRow={(record, rowIndex) => {
                                 }} dataSource={this.state.selectedRestaurantNearby} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
-                                    <ColumnGroup title="Nearby Restaurants (Same Postal Code)">
+                                    <ColumnGroup title="Nearby Restaurants (By Postal Code)">
                                         <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}/>
                                         <Column title="Stars" dataIndex="stars" key="stars" sorter= {(a, b) => a.stars - b.stars}/>
                                     </ColumnGroup>

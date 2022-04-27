@@ -41,8 +41,8 @@ const getFilterNeighborhoods = async (state, postal_code, meal_type, page, pages
     return res.json()
 }
 
-const getRevisitRate = async (business_id) => {
-    var res = await fetch(`http://${config.server_host}:${config.server_port}/getRevisitRate?business_id=${business_id}`, {
+const getRevisitRate = async (businessId) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getRevisitRate?businessId=${businessId}`, {
         method: 'GET',
     })
     return res.json()
