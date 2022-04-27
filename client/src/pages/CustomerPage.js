@@ -44,7 +44,8 @@ class CustomerPage extends React.Component {
             starsLow: 0,
             starsHigh: 5,
             restaurantsResults: [],
-            reviews: []
+            selectedRestaurantId: window.location.search ? window.location.search.substring(1).split('=')[1] : 'bZiIIUcpgxh8mpKMDhdqbA',
+            selectedRestaurantReviews: []
         }
 
         this.stateChange = this.stateChange.bind(this)
@@ -58,6 +59,7 @@ class CustomerPage extends React.Component {
         this.handleStarsChange = this.handleStarsChange.bind(this)
 
         this.updateGetRestaurantsByStateCity = this.updateGetRestaurantsByStateCity.bind(this)
+        this.goToReviews = this.goToReviews.bind(this)
     }
 
     stateChange(value) {
@@ -121,12 +123,11 @@ class CustomerPage extends React.Component {
         })
     }
 
-    goToReviews(value) {
-        getReviews(value, null, null).then(res => {
-            this.setState({reviews:res.results})
-            }
-        )
-
+    goToReviews(businessId) {
+        // window.location = `/customer?id=${businessId}`
+        getReviews(this.state.selectedRestaurantId).then(res => {
+            this.setState({ selectedRestaurantReviews: res.results })
+        })
     }
 
 
@@ -136,6 +137,10 @@ class CustomerPage extends React.Component {
             .then(res => {
                 this.setState( {restaurantsResults: res.results} )
             })
+
+        getReviews(this.state.selectedRestaurantId).then(res => {
+            this.setState({ selectedRestaurantReviews: res.results })
+        })
     }
 
     render() {
@@ -260,7 +265,8 @@ class CustomerPage extends React.Component {
                         };
                     }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
                         <ColumnGroup title="Teams">
-                            <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}/>
+                            <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}
+                                render={(text, row) => <a href={`/customer?id=${row.businessId}`}>{text}</a>}/>
                             <Column title="Stars" dataIndex="stars" key="stars" sorter= {(a, b) => a.stars - b.stars}/>
                         </ColumnGroup>
                         <ColumnGroup title="Location Info">
@@ -275,9 +281,9 @@ class CustomerPage extends React.Component {
                 </div>
 
                 <Divider />
-                {this.state.reviews ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
+                {this.state.selectedRestaurantReviews ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <Table onRow={(record, rowIndex) => {
-                    }} dataSource={this.state.reviews} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
+                    }} dataSource={this.state.selectedRestaurantReviews} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
                         <Column title="Reviews" dataIndex="review" key="review"/>
                     </Table>
                 </div> : null}
