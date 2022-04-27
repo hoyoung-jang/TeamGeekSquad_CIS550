@@ -341,7 +341,7 @@ Top 20 lists (location, cuisine) order by rating
 */
 async function getReviews(req, res) {
     const businessId = req.query.businessId ? req.query.businessId : 'bZiIIUcpgxh8mpKMDhdqbA'
-    const basicQuery = `SELECT business_id AS businessId, text AS review FROM Review WHERE business_id = '${businessId}'`
+    const basicQuery = `SELECT business_id AS businessId, date, stars, text AS review FROM Review WHERE business_id = '${businessId}' ORDER BY date DESC`
     const query = `${basicQuery} ;`
 
     connection.query(query, function (error, results, fields) {

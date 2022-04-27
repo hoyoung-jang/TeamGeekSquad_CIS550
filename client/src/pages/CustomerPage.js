@@ -283,7 +283,11 @@ class CustomerPage extends React.Component {
                 {this.state.selectedRestaurantReviews ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
                     <Table onRow={(record, rowIndex) => {
                     }} dataSource={this.state.selectedRestaurantReviews} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
-                        <Column title="Reviews" dataIndex="review" key="review"/>
+                        <ColumnGroup title="Reviews">
+                            <Column title="Date" dataIndex="date" key="date"/>
+                            <Column title="Stars" dataIndex="stars" key="stars"/>
+                            <Column title="Contents" dataIndex="review" key="review"/>
+                        </ColumnGroup>
                     </Table>
                 </div> : null}
                 <Divider />
