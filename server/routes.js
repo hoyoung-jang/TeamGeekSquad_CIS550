@@ -23,30 +23,43 @@ connection.connect();
 async function getAllRestaurants (req, res) {
     // use this league encoding in your query to furnish the correct results
     const pagesize = req.query.pagesize? req.query.pagesize : 10;
-    if (req.query.page && !isNaN(req.query.page)) {
-        // This is the case where page is defined.
-        //replaced ‘%chinese%’ with the rability for the user to enter meal type
-        connection.query(
-            `SELECT business_id,name,stars,review_count,hours FROM Restaurant a
-            LIMIT ${pagesize}*(${req.query.page}-1), ${pagesize}`, function (error, results, fields) {
-                if (error) {
-                    console.log(error)
-                    res.json({ error: error })
-                } else if (results) {
-                    res.json({ results: results })
-                }
-            });
-    } else {
-        connection.query(`SELECT business_id,name,stars,review_count,hours FROM Restaurant`
-        , function (error, results, fields) {
-            if (error) {
-                console.log(error)
-                res.json({ error: error })
-            } else if (results) {
-                res.json({ results: results })
-            }
-        });
-    }
+    const pageQuery = req.query.page? `LIMIT ` + pagesize*(req.query.page-1) + `, ${pagesize}` : ``
+    const basicQuery = `SELECT business_id,name,stars,review_count,hours FROM Restaurant a`
+    const query = `${basicQuery} ${pageQuery};`
+
+    connection.query(query, function (error, results, fields) {
+        if (error) {
+            console.log(error)
+            res.json({error: error})
+        } else if (results) {
+            res.json({results: results})
+        }
+    });
+
+    // if (req.query.page && !isNaN(req.query.page)) {
+    //     // This is the case where page is defined.
+    //     //replaced ‘%chinese%’ with the rability for the user to enter meal type
+    //     connection.query(
+    //         `SELECT business_id,name,stars,review_count,hours FROM Restaurant a
+    //         LIMIT ${pagesize}*(${req.query.page}-1), ${pagesize}`, function (error, results, fields) {
+    //             if (error) {
+    //                 console.log(error)
+    //                 res.json({ error: error })
+    //             } else if (results) {
+    //                 res.json({ results: results })
+    //             }
+    //         });
+    // } else {
+    //     connection.query(`SELECT business_id,name,stars,review_count,hours FROM Restaurant`
+    //     , function (error, results, fields) {
+    //         if (error) {
+    //             console.log(error)
+    //             res.json({ error: error })
+    //         } else if (results) {
+    //             res.json({ results: results })
+    //         }
+    //     });
+    // }
 }
 
 //QUERY A
@@ -336,6 +349,25 @@ async function getReviews(req, res) {
     });
 }
 
+//QUERY A
+async function getCovidBanner (req, res) {
+    const businessId = req.query.businessId ? req.query.businessId : 'oZzN706lKoL4faaTK739xA'
+    connection.query(
+        `SELECT *
+            FROM COVID_Response
+            WHERE COVID_business_id = '${businessId}'
+                ;`, function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                res.json({ error: error })
+            } else if (results) {
+                res.json({ results: results })
+            }
+        }
+    );
+}
+
+
 
 module.exports = {
     getAllRestaurants,
@@ -346,5 +378,6 @@ module.exports = {
     filter_neighborhoods,
     getRevisitRate,
     top_ten_restaurants_by_city_COVID,
-    getReviews
+    getReviews,
+    getCovidBanner
 }

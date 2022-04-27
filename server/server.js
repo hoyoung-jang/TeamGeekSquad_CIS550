@@ -38,6 +38,10 @@ app.get('/getReviews', routes.getReviews)
 // Route G - register as GET
 app.get('/getRestaurant', routes.getRestaurant)
 
+// Route G - register as GET
+app.get('/getCovidBanner', routes.getCovidBanner)
+
+
 
 app.listen(config.server_port, () => {
     console.log(`Server running at http://${config.server_host}:${config.server_port}/`);

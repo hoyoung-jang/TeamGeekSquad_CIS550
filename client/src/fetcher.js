@@ -69,6 +69,13 @@ const getRestaurant = async (businessId) => {
     return res.json()
 }
 
+const getCovidBanner = async (businessId) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/getCovidBanner?businessId=${businessId}`, {
+        method: 'GET',
+    })
+    return res.json()
+}
+
 
 export {
     getAllRestaurants,
@@ -79,5 +86,6 @@ export {
     getRevisitRate,
     getTopTenRestaurantsByCityCOVID,
     getReviews,
-    getRestaurant
+    getRestaurant,
+    getCovidBanner
 }

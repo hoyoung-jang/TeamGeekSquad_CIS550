@@ -168,7 +168,7 @@ class OwnerPage extends React.Component {
         })
 
         getRevisitRate(record.business_id).then(res =>{
-            // console.log(res.results)
+            console.log(res.results)
             this.setState({comparisonRestaurantRevisitRate: res.results[0].revisiting_rate})
         })
 

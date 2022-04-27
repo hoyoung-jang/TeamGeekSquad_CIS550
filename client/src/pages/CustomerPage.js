@@ -265,8 +265,7 @@ class CustomerPage extends React.Component {
                         };
                     }} dataSource={this.state.restaurantsResults} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
                         <ColumnGroup title="Teams">
-                            <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}
-                                render={(text, row) => <a href={`/customer?id=${row.businessId}`}>{text}</a>}/>
+                            <Column title="Name" dataIndex="name" key="name" sorter= {(a, b) => a.name.localeCompare(b.name)}/>
                             <Column title="Stars" dataIndex="stars" key="stars" sorter= {(a, b) => a.stars - b.stars}/>
                         </ColumnGroup>
                         <ColumnGroup title="Location Info">

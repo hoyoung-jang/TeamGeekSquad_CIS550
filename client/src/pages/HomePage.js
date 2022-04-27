@@ -2,15 +2,20 @@ import React from 'react';
 import {
   Table,
   Pagination,
-  Select
+  Row,
+  Col,
+  Divider,
+  Select,
+  Slider,
+  Checkbox
 } from 'antd'
 
 import MenuBar from '../components/MenuBar';
-import { getAllRestaurants } from '../fetcher'
+import { getAllRestaurants, getCovidBanner } from '../fetcher'
 
 const restaurantColumns = [
  /*  {
-    title: 'business_id',
+    title: 'business ID',
     dataIndex: 'business_id',
     key: 'business_id',
     sorter: (a, b) => a.business_id.localeCompare(b.business_id)
@@ -51,18 +56,30 @@ class HomePage extends React.Component {
     this.state = {
       restaurantsResults: [],
       // pagination: null
+      covidBanner: []
     }
   
-    this.leagueOnChange = this.leagueOnChange.bind(this)
+    this.updateAllRestaurants = this.updateAllRestaurants.bind(this)
+    this.updateCovidBanner = this.updateCovidBanner.bind(this)
   }
 
 
-  leagueOnChange() {
+  updateAllRestaurants() {
     getAllRestaurants(null, null).then(res => {
       // TASK 1: set the correct state attribute to res.results
       this.setState({ restaurantsResults: res.results })
     })
   }
+
+
+  updateCovidBanner(record) {
+    getCovidBanner(record.business_id).then(res => {
+      console.log(record.business_id)
+      // TASK 1: set the correct state attribute to res.results
+      this.setState({ covidBanner: res.results })
+    })
+  }
+
 
   componentDidMount() {
     getAllRestaurants(null, null).then(res => {
@@ -78,13 +95,24 @@ class HomePage extends React.Component {
         <MenuBar />
         <div style={{ width: '70vw', margin: '0 auto', marginTop: '5vh' }}>
           <h3>Restaurants</h3>
-          <Table dataSource={this.state.restaurantsResults} columns={restaurantColumns} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}/>
+          <Table onRow={(record, rowIndex) => {
+            return {
+              onClick: event => {this.updateCovidBanner(record)}
+            };
+          }} dataSource={this.state.restaurantsResults} columns={restaurantColumns} pagination={{ pageSizeOptions:[5, 10], defaultPageSize: 5, showQuickJumper:true }}/>
         </div>
 
+        <Divider />
+        {this.state.covidBanner ? <div style={{ width: '70vw', margin: '0 auto', marginTop: '2vh' }}>
+          <Table onRow={(record, rowIndex) => {
+          }} dataSource={this.state.covidBanner} pagination={{ pageSizeOptions:[5, 10, 20], defaultPageSize: 5, showQuickJumper:true }}>
+            <Col title="COVID Policy" dataIndex="COVID_banner" key="COVID_banner"/>
+          </Table>
+        </div> : null}
+        <Divider />
       </div>
     )
   }
-
 }
 
 export default HomePage
