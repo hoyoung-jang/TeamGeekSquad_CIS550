@@ -248,12 +248,12 @@ async function filter_neighborhoods(req, res) {
 
 //QUERY E
 async function getRevisitRate (req, res) {
-    const businessId = req.query.businessIid ? req.query.businessId : 'oZzN706lKoL4faaTK739xA'
+    const businessId = req.query.businessId ? req.query.businessId : 'oZzN706lKoL4faaTK739xA'
 
     connection.query(
-        `SELECT a.business_id, sum(a.visit_count) as total_count,
-                sum(a.visit_count)-count(a.business_id) as revisit_count,
-                (sum(a.visit_count)-count(a.business_id))/sum(a.visit_count) as revisiting_rate
+        `SELECT a.business_id AS businessId, sum(a.visit_count) as totalCount,
+                sum(a.visit_count)-count(a.business_id) as revisitCount,
+                (sum(a.visit_count)-count(a.business_id))/sum(a.visit_count) as revisitRate
             FROM
                 (SELECT business_id, user_id, count(user_id) as visit_count
                 FROM Review

@@ -153,7 +153,7 @@ class OwnerPage extends React.Component {
 
         getRevisitRate(record.businessId).then(res =>{
             // console.log(res.results)
-            this.setState({selectedRestaurantRevisitRate: res.results[0].revisiting_rate})
+            this.setState({selectedRestaurantRevisitRate: res.results[0].revisitRate})
         })
 
         getRestaurantsByPostalCode(record.postalCode).then(res => {
