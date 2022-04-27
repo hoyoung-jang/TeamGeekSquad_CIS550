@@ -1,13 +1,8 @@
 import React from 'react';
 import {
   Table,
-  Pagination,
-  Row,
   Col,
   Divider,
-  Select,
-  Slider,
-  Checkbox
 } from 'antd'
 
 import MenuBar from '../components/MenuBar';

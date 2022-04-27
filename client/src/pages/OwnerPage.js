@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormInput, FormGroup, Button, Card, CardBody, CardTitle, Progress } from "shards-react";
+import { Form, FormInput, FormGroup, Button, Card, CardBody} from "shards-react";
 
 import {
     Table,
