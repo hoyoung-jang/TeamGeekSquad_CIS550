@@ -136,15 +136,16 @@ async function getRevisitRate (req, res) {
     const businessId = req.query.businessId ? req.query.businessId : 'aneMSizALcN1XZo9lv1SYg'
 
     connection.query(
-        `SELECT a.business_id AS businessId, sum(a.visit_count) as totalCount,
-                sum(a.visit_count)-count(a.business_id) as revisitCount,
-                (sum(a.visit_count)-count(a.business_id))/sum(a.visit_count) as revisitRate
-            FROM
-                (SELECT business_id, user_id, count(user_id) as visit_count
+        `WITH a AS (SELECT business_id, user_id, count(user_id) as visit_count
                 FROM Review
                 WHERE business_id = '${businessId}'
                 GROUP BY user_id
-                ORDER BY visit_count) a;`, function (error, results, fields) {
+                ORDER BY visit_count)
+
+            SELECT a.business_id AS businessId, sum(a.visit_count) as totalCount,
+                sum(a.visit_count)-count(a.business_id) as revisitCount,
+                (sum(a.visit_count)-count(a.business_id))/sum(a.visit_count) as revisitRate
+            FROM a;`, function (error, results, fields) {
             if (error) {
                 console.log(error)
                 res.json({ error: error })
